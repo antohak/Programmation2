@@ -9,10 +9,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
@@ -59,7 +58,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    public final static Color GRIS_FONCE = new Color(171, 171, 171);
 
-   //fichiers texte contentant la collection de videos
+   //fichiers texte contentant la listeCollectionDeroulante de videos
    public final static String FIC_VIDEOS = "videos.txt";
 
 
@@ -90,18 +89,18 @@ public class TP3 extends WindowAdapter implements ActionListener {
    private JButton[] optionCategories = new JButton[2];
    
    //Liste deroulante
-   private JComboBox collection = new JComboBox();
+   private JComboBox listeCollectionDeroulante = new JComboBox();
    
-   private IListeAssociative<String, Video> liste = new ListeAssociativeChainee();
+   private IListeAssociative<String, Video> collection = new ListeAssociativeChainee();
    
    
    public TP3() {
       init();
    }
    
-   //Savoir si la liste est vide
+   //Savoir si la collection est vide
    public boolean listeEstVide() {
-       return liste.estVide();
+       return collection.estVide();
    }
    
    //Main init
@@ -201,11 +200,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
    }
     
     public void gererEventBouttons(ActionEvent e) {
-        
         if(e.getSource() == modeButton[0]) { //Boutton precedent
-            //If premier element de la liste -> boutton disabled
-            // else if element.getIndex > 0 -> boutton clickable
-            //   if boutton clicked -> get l'element a l'index currentElement.getIndex() - 1;
+            
         } else if(e.getSource() == modeButton[1]) { //Boutton suivant
             //Element.suivant()
         } else if(e.getSource() == modeButton[2]) { //Boutton ajouter
@@ -217,7 +213,6 @@ public class TP3 extends WindowAdapter implements ActionListener {
         } else if(e.getSource() == modeButton[5]) { //Boutton rechercher
             
         } else if(e.getSource() == optionCategories[0]) { //Boutton ajouter categorie
-            System.out.println("Hey j'ai cliquer sur un boutton");
             JPanel popUpSelection = new JPanel();
             JComboBox selectionCategorie = new JComboBox();
             selectionCategorie.addItem("test 1");
@@ -226,8 +221,15 @@ public class TP3 extends WindowAdapter implements ActionListener {
             popUpSelection.add(selectionCategorie);
             fenetre.getContentPane().add(popUpSelection);
             JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-        } else if(e.getSource() == (JButton) optionCategories[1]) { //Boutton supprimer categorie
-            
+        } else if(e.getSource() == optionCategories[1]) { //Boutton supprimer categorie
+            JPanel popUpSelection = new JPanel();
+            JComboBox selectionCategorie = new JComboBox();
+            selectionCategorie.addItem("test 1");
+            selectionCategorie.addItem("test 2");
+            selectionCategorie.addItem("test 3");
+            popUpSelection.add(selectionCategorie);
+            fenetre.getContentPane().add(popUpSelection);
+            JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
         }
     }
     
@@ -239,7 +241,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode consultation
    public void modeConsultation() {
-       collection.setEnabled(true);
+       listeCollectionDeroulante.setEnabled(true);
        for(int i = 0; i < components.length; i++) {
            if( i < 4) {
                components[i].setVisible(false);
@@ -262,11 +264,13 @@ public class TP3 extends WindowAdapter implements ActionListener {
                modeButton[l].setVisible(false);
            }
        }
+       optionCategories[0].setEnabled(false);
+       optionCategories[1].setEnabled(false);
    }
    
    //Mode ajout
    public void modeAjout() {
-       collection.setEnabled(false);
+       listeCollectionDeroulante.setEnabled(false);
        for(int i = 0; i < infos_film.length; i++) {
            infos_film[i].setVisible(false);
        }
@@ -278,6 +282,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
                components[j].setEnabled(true);
            }
        }
+       optionCategories[0].setEnabled(true);
        optionCategories[1].setEnabled(false);
        components[4].setBackground(Color.WHITE);
        
@@ -294,7 +299,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode modification
    public void modeModification() {
-       collection.setEnabled(true);
+       listeCollectionDeroulante.setEnabled(true);
        for(int i = 0; i < infos_film.length; i++) {
            infos_film[i].setVisible(false);
        }
@@ -327,7 +332,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode recherche
    public void modeRecherche() {
-       collection.setEnabled(false);
+       listeCollectionDeroulante.setEnabled(false);
        for(int j = 0; j < components.length; j++) { 
            if(j < 3) {
                components[j].setVisible(true);
@@ -393,8 +398,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
    public void initPanneauHautComponents() {
        int y_Pos = labels[1].getY() - 5;
        
-       collection = new JComboBox();
-       collection.setBounds(labels[0].getX() + labels[0].getWidth(), labels[0].getY(), 
+       listeCollectionDeroulante = new JComboBox();
+       listeCollectionDeroulante.setBounds(labels[0].getX() + labels[0].getWidth(), labels[0].getY(), 
                             haut.getWidth() - (labels[0].getX() + labels[0].getWidth()), 20);
 
        mode[0] = new JRadioButton(radio_text[0]);
@@ -410,7 +415,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        mode[3] = new JRadioButton(radio_text[3]);
        mode[3].setBounds(mode[2].getX() + mode[2].getWidth() + 5, y_Pos, 100, 30);
        
-       haut.add(collection);
+       haut.add(listeCollectionDeroulante);
        
        for(int j = 0; j < mode.length; j++) {
            haut.add(mode[j]);
@@ -513,7 +518,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    }
    
    public void changerModeConsultation() {
-       String titre = collection.getSelectedItem().toString();
+       String titre = listeCollectionDeroulante.getSelectedItem().toString();
    }
    
    public void changerModeModification() {
