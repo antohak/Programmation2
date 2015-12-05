@@ -1,3 +1,5 @@
+package tp3;
+
 
 import java.util.ArrayList;
 
@@ -20,7 +22,7 @@ import java.util.ArrayList;
  *     position (un index) : le premier element est a la position 0, 
  *     le deuxieme, a la position 1 et ainsi de suite.
  * 
- * Deux cles differentes peuvent se voir associer les mêmes elements :
+ * Deux cles differentes peuvent se voir associer les mï¿½mes elements :
  * Ex: 
  *    cle1 -> e1, e2, e3, e4, e5
  *    cle2 -> e1, e3, e6, e7
@@ -32,7 +34,7 @@ import java.util.ArrayList;
  * cette liste associative.
  * 
  * Notez que plusieurs methodes de cette classe utilisent (directement ou indirectement) 
- * la methode equals des objets de type C et V pour déterminer, par exemple, si une 
+ * la methode equals des objets de type C et V pour dï¿½terminer, par exemple, si une 
  * cle existe ou si un element existe. La methode equals devrait donc etre redefinie 
  * dans les types C et V, pour assurer le bon fonctionnement de ces methodes.
  * 

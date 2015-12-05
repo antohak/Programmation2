@@ -1,20 +1,22 @@
+package tp3;
+
 /**
  * Code Permanent : MICP17049305
  * Nom : Michel
- * Prénom : Pierrick
+ * PrÃ©nom : Pierrick
  * Sigle du cours : INF2120
  * Groupe : 30
- * Nom du professeur : Mélanie Lord
+ * Nom du professeur : MÃ©lanie Lord
  *
  * @author Pierrick Michel
  *          LePmnin@Gmail.Com
  *
  * @description : Travail Pratique 02
- *                  Implémentation de l'interface IListeAssociative
- *                  en utilisant liste de maillons comme structure de données
+ *                  ImplÃ©mentation de l'interface IListeAssociative
+ *                  en utilisant liste de maillons comme structure de donnÃ©es
  *
  * @class : ListeAssociative
- * @classDescription : Classe implémentant l'interface à implémenter
+ * @classDescription : Classe implÃ©mentant l'interface Ã  implï¿½menter
  * @version 1.0
  */
 
@@ -37,12 +39,12 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
     }
         
     /**
-     * Méthode Equals
+     * Mï¿½thode Equals
      * Comparaison des deux objets ListeAssociative.
      *
-     * instance of IListeAssociative | même nombre de clés | même taille | Toutes les clés ont les mêmes éléments
+     * instance of IListeAssociative | mï¿½me nombre de clÃ©s | mï¿½me taille | Toutes les clÃ©s ont les mÃªmes Ã©lÃ©ments
      *
-     * @param autreListeAssociativeChainee L'objet à comparer
+     * @param autreListeAssociativeChainee L'objet ï¿½ comparer
      * @return true si les deux objets ListeAssociative sont identiques
      */
     @SuppressWarnings("unchecked")
@@ -162,10 +164,10 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
         
         //Verification cle ou element null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         if(element == null){
-            throw new NullPointerException("L'élément " + element + " est null");
+            throw new NullPointerException("L'ï¿½lï¿½ment " + element + " est null");
         }
         
         //Cas si la cle n'existe pas
@@ -214,11 +216,11 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
     public boolean ajouter(Object cle, Object element) throws NullPointerException {
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         //Verification element null
         if(element == null){
-            throw new NullPointerException("L'élément " + element + " est null");
+            throw new NullPointerException("L'ï¿½lï¿½ment " + element + " est null");
         }
         
         boolean confirmation = false;
@@ -226,7 +228,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
         //Cas si la cle existe
         if(this.cleExiste(cle)){
             if(!this.elementExiste(cle, element)){
-                /* Méthode à Arrays */
+                /* Mï¿½thode ï¿½ Arrays */
                 ArrayList arrayElements = this.obtenirElements(cle);
                 arrayElements.add(element);
                 this.modifier(cle, arrayElements);
@@ -240,16 +242,16 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
         
         //Cas si la cle n'existe pas
         else{
-            //Ajouter cle à la fin de la chaine
+            //Ajouter cle ï¿½ la fin de la chaine
             Maillon<C> clesIterator = cles;
             Maillon<Maillon<E>> elementsIterator = elements;
             
-            //Aller à la fin de la liste
+            //Aller ï¿½ la fin de la liste
             while(clesIterator.suivant() != null){
                 clesIterator = clesIterator.suivant();
                 elementsIterator = elementsIterator.suivant();
             }
-            //Créer une nouvelle cle + nouveau elements à cette place
+            //Crï¿½er une nouvelle cle + nouveau elements ï¿½ cette place
             if(clesIterator.info() == null){
                 clesIterator.modifierInfo((C)cle);
                 elementsIterator.modifierInfo(new Maillon<E>((E)element));
@@ -259,7 +261,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
             }
             nbrCles++;
             confirmation = true;
-            this.ajouter(cle, element); //Récursif car on vient d'ajouter la clé à la chaine de clés
+            this.ajouter(cle, element); //Rï¿½cursif car on vient d'ajouter la clï¿½ ï¿½ la chaine de clï¿½s
         }
         
         return confirmation;
@@ -299,11 +301,11 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
                                                                                   IndexOutOfBoundsException{
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         //Verification listeElements null
         if(listeElements == null){
-            throw new NullPointerException("La liste d'éléments" + listeElements + " est null");
+            throw new NullPointerException("La liste d'ï¿½lï¿½ments" + listeElements + " est null");
         }else{
             listeElements = this.removeDuplicates(listeElements);
             listeElements = this.removeNulls(listeElements);
@@ -312,12 +314,12 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
         boolean confirmation = false;
         
         if(!listeElements.isEmpty()){
-            //Cas si la clé n'existe pas
+            //Cas si la clï¿½ n'existe pas
             if(!this.cleExiste(cle)){
                 confirmation = this.ajouter(cle, listeElements);
             }
             else{
-                //Cas si la clé existe
+                //Cas si la clï¿½ existe
                 //Verification index entre 0 et this.obtenirNbrElements
                 if(index < 0 || index > this.obtenirNbrElements(cle)){
                     throw new IndexOutOfBoundsException("L'index " + index + " n'est pas inclu entre 0 et " + this.obtenirNbrElements(cle));
@@ -367,7 +369,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
     public boolean ajouter(Object cle, ArrayList listeElements) throws NullPointerException {
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         //Verification listeElements null
         if(listeElements == null){
@@ -382,7 +384,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
         
         if(!listeElements.isEmpty()){
         
-            //Cas si la clé existe
+            //Cas si la clï¿½ existe
             if(this.cleExiste(cle)){
                 Maillon<C> clesIterator = cles;
                 Maillon<Maillon<E>> elementsIterator = elements;
@@ -418,7 +420,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
                     confirmation = false;
                 }
             }
-            //Cas si la clé n'existe pas
+            //Cas si la clï¿½ n'existe pas
             else{
                 Maillon<C> clesIterator = cles;
                 Maillon<Maillon<E>> elementsIterator = elements;
@@ -468,7 +470,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
                                                           IndexOutOfBoundsException{
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         
         Object elementSupprime = null;
@@ -508,7 +510,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
     public ArrayList supprimer(Object cle) throws NullPointerException {
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         
         ArrayList elementsSupprimes;
@@ -573,11 +575,11 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
     public boolean supprimer(Object cle, Object element) throws NullPointerException {
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         //Verification element null
         if(element == null){
-            throw new NullPointerException("L'élément " + element + " est null");
+            throw new NullPointerException("L'ï¿½lï¿½ment " + element + " est null");
         }
         
         boolean confirmation = false;
@@ -615,7 +617,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
     public ArrayList obtenirElements(Object cle) throws NullPointerException {
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         
         ArrayList arrayElements = new ArrayList();
@@ -675,7 +677,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
                                                                IndexOutOfBoundsException{
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         //Verification index entre 0 et nbrCles
         if(index < 0 || index > this.obtenirNbrElements(cle)){
@@ -741,11 +743,11 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
     public int obtenirIndex(Object cle, Object element) throws NullPointerException {
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         //Verification element null
         if(element == null){
-            throw new NullPointerException("L'élément " + element + " est null");
+            throw new NullPointerException("L'ï¿½lï¿½ment " + element + " est null");
         }
         
         int indexRecherche = -1;
@@ -802,7 +804,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
     public ArrayList obtenirCles(Object element) throws NullPointerException {
         //Verification element null
         if(element == null){
-            throw new NullPointerException("L'élément " + element + " est null");
+            throw new NullPointerException("L'ï¿½lï¿½ment " + element + " est null");
         }
         
         ArrayList newCles = new ArrayList();
@@ -879,7 +881,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
         
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         
         Maillon<C> clesIterator = cles;
@@ -942,7 +944,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
                                                                                 IndexOutOfBoundsException {
         //Verification cle
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         //Verification nouvelElement
         if(nouvelElement == null){
@@ -951,7 +953,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
         
         boolean confirmation = false;
         
-        //Cas où la clé n'existe pas ou que le nouvel element existe déjà
+        //Cas oï¿½ la clï¿½ n'existe pas ou que le nouvel element existe dï¿½jï¿½
         if(!this.cleExiste(cle)){
             confirmation = false;
         } else if(this.elementExiste(cle, nouvelElement)){
@@ -962,7 +964,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
                 throw new IndexOutOfBoundsException("L'index " + index + " n'est pas inclu entre 0 et " + this.obtenirNbrElements(cle));
             }
             
-            //Cas où la clé existe
+            //Cas oï¿½ la clï¿½ existe
             if(this.cleExiste(cle)){
                 ArrayList arrayElements = this.obtenirElements(cle);
                 arrayElements.set(index, (E)nouvelElement);
@@ -998,11 +1000,11 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
     public boolean modifier(Object cle, ArrayList nouveauxElements) throws NullPointerException {
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         //Verification nouveauElements null
         if(nouveauxElements == null){
-            throw new NullPointerException("L'array de nouveaux éléments " + nouveauxElements + " sont null");
+            throw new NullPointerException("L'array de nouveaux ï¿½lï¿½ments " + nouveauxElements + " sont null");
         }
         
         boolean confirmation = false;
@@ -1078,7 +1080,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
     public boolean cleExiste(Object cle) throws NullPointerException {
         //Verification cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         
         boolean cleExiste = false;
@@ -1104,11 +1106,11 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
     private boolean elementExiste(Object cle, Object element) throws NullPointerException{
         //Verification de cle null
         if(cle == null){
-            throw new NullPointerException("La clé " + cle + " est null");
+            throw new NullPointerException("La clï¿½ " + cle + " est null");
         }
         //Verification d'element null
         if(element == null){
-            throw new NullPointerException("L'élément " + element + " est null");
+            throw new NullPointerException("L'ï¿½lï¿½ment " + element + " est null");
         }
         
         boolean elementExiste = false;
