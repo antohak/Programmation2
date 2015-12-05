@@ -78,7 +78,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Tableaux de components
    private JLabel[] labels = new JLabel[8];
-   private JLabel[] infos_film = new JLabel[4];
+   private JLabel[] infos_film = new JLabel[2];
    private JComponent[] components = new JComponent [8];
    private JRadioButton[] mode = new JRadioButton [4];
    private JButton[] modeButton = new JButton [6];
@@ -87,6 +87,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    private JComboBox collection = new JComboBox();
    
    private IListeAssociative liste = new ListeAssociativeChainee();
+   
    
    public TP3() {
       init();
@@ -268,7 +269,15 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode recherche
    public void modeRecherche() {
-       //A faire
+       collection.setEnabled(false);
+       for(int j = 0; j < components.length; j++) { 
+           if(j < 3) {
+               components[j].setVisible(true);
+               components[j].setEnabled(true);
+           } else {
+               components[j].setEnabled(false);
+           }
+       }
    }
        
    //initialize panneau du haut
@@ -346,13 +355,13 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        components[2] = new JComboBox();
        components[2].setBounds(x_Pos, labels[4].getY(), 360, 20);
-       infos_film[2] = new JLabel();
-       infos_film[2].setBounds(x_Pos, labels[4].getY(), 360, 20);
+       //infos_film[2] = new JLabel();
+       //infos_film[2].setBounds(x_Pos, labels[4].getY(), 360, 20);
        
        components[3] = new JComboBox();
        components[3].setBounds(x_Pos, labels[5].getY(), 360, 20);
-       infos_film[3] = new JLabel();
-       infos_film[3].setBounds(x_Pos, labels[5].getY(), 360, 20);
+       //infos_film[3] = new JLabel();
+       //infos_film[3].setBounds(x_Pos, labels[5].getY(), 360, 20);
        
        components[4] = new JTextArea();
        components[4].setBounds(x_Pos, labels[6].getY(), 360, 65);
