@@ -8,6 +8,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
@@ -78,15 +83,16 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Tableaux de components
    private JLabel[] labels = new JLabel[8];
-   private JLabel[] infos_film = new JLabel[2];
-   private JComponent[] components = new JComponent [8];
+   private JLabel[] infos_film = new JLabel[4];
+   private JComponent[] components = new JComponent [6];
    private JRadioButton[] mode = new JRadioButton [4];
    private JButton[] modeButton = new JButton [6];
+   private JButton[] optionCategories = new JButton[2];
    
    //Liste deroulante
    private JComboBox collection = new JComboBox();
    
-   private IListeAssociative liste = new ListeAssociativeChainee();
+   private IListeAssociative<String, Video> liste = new ListeAssociativeChainee();
    
    
    public TP3() {
@@ -128,22 +134,43 @@ public class TP3 extends WindowAdapter implements ActionListener {
       //derniere instruction
       fenetre.setVisible(true);
    }
-
    
    @Override
    public void actionPerformed(ActionEvent e) {
-       gererModeChoisis(e);
+       if(e.getSource() instanceof JRadioButton) {
+           gererModeChoisis(e);
+       } else if(e.getSource() instanceof JButton) { 
+           gererEventBouttons(e);
+       }
    }
    
    @Override
    public void windowClosing(WindowEvent e) {
+       try {
+           sauvegarder();
+       } catch (Exception ex) {
+           ex.printStackTrace();
+       }
    }
    
-   /******************************************/
-   /* Methodes qui handle les different type */
-   /* de boutton, field, et mode choisis ou  */
-   /* cliquer                                */
-   /******************************************/
+   public void sauvegarder() {
+       final String PATH = "./videos.txt";
+       File fichier = new File(PATH);
+       String formatDeSortie = "";
+       try {
+            FileWriter ecrivain = new FileWriter(fichier);
+            ecrivain.write(formatDeSortie);
+            ecrivain.close();
+       } catch(IOException io) {
+            io.getMessage();
+       }
+   }
+   
+/******************************************/
+/* Methodes qui handle les different type */
+/* de boutton, field, et mode choisis ou  */
+/* cliquer                                */
+/******************************************/
    
     /**
      * Gere les differents type de mmode choisis
@@ -173,13 +200,42 @@ public class TP3 extends WindowAdapter implements ActionListener {
        }
    }
     
+    public void gererEventBouttons(ActionEvent e) {
+        
+        if(e.getSource() == modeButton[0]) { //Boutton precedent
+            //If premier element de la liste -> boutton disabled
+            // else if element.getIndex > 0 -> boutton clickable
+            //   if boutton clicked -> get l'element a l'index currentElement.getIndex() - 1;
+        } else if(e.getSource() == modeButton[1]) { //Boutton suivant
+            //Element.suivant()
+        } else if(e.getSource() == modeButton[2]) { //Boutton ajouter
+            
+        } else if(e.getSource() == modeButton[3]) { //Boutton modifier
+            
+        } else if(e.getSource() == modeButton[4]) { //Boutton supprimer
+            
+        } else if(e.getSource() == modeButton[5]) { //Boutton rechercher
+            
+        } else if(e.getSource() == optionCategories[0]) { //Boutton ajouter categorie
+            System.out.println("Hey j'ai cliquer sur un boutton");
+            JPanel popUpSelection = new JPanel();
+            JComboBox selectionCategorie = new JComboBox();
+            selectionCategorie.addItem("test 1");
+            selectionCategorie.addItem("test 2");
+            selectionCategorie.addItem("test 3");
+            popUpSelection.add(selectionCategorie);
+            fenetre.getContentPane().add(popUpSelection);
+            JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        } else if(e.getSource() == (JButton) optionCategories[1]) { //Boutton supprimer categorie
+            
+        }
+    }
     
-    
-   /****************************************/
-   /* Les 5 type de mode: Depart,          */
-   /* Cosultation, Ajout, Modification et  */
-   /* Recherche.                           */
-   /****************************************/
+/****************************************/
+/* Les 5 type de mode: Depart,          */
+/* Cosultation, Ajout, Modification et  */
+/* Recherche.                           */
+/****************************************/
    
    //Mode consultation
    public void modeConsultation() {
@@ -218,10 +274,11 @@ public class TP3 extends WindowAdapter implements ActionListener {
            if(j < 4) {
                components[j].setVisible(true);
                components[j].setEnabled(true);
-           } else if(j != 5 && j != 7){
+           } else if(j != 5){
                components[j].setEnabled(true);
            }
        }
+       optionCategories[1].setEnabled(false);
        components[4].setBackground(Color.WHITE);
        
        for(int k = 0; k < modeButton.length; k++) {
@@ -249,7 +306,9 @@ public class TP3 extends WindowAdapter implements ActionListener {
                components[j].setEnabled(true);
            }
        }
+       
        components[4].setBackground(Color.WHITE);
+       components[5].setBackground(GRIS);
        
        for(int k = 0; k < modeButton.length; k++) {
             modeButton[k].setEnabled(false);
@@ -257,14 +316,13 @@ public class TP3 extends WindowAdapter implements ActionListener {
        }
        
        modeButton[3].setVisible(true);//Boutton Modifier
-       modeButton[4].setVisible(true);//Boutton Modifier
+       modeButton[4].setVisible(true);//Boutton Supprimer
+       boolean enabled = true;
        if(listeEstVide()) {
-           modeButton[3].setEnabled(false);
-           modeButton[4].setEnabled(false);
-       } else {
-           modeButton[3].setEnabled(true);
-           modeButton[4].setEnabled(true);
-       }
+           enabled = false;
+       } 
+       modeButton[3].setEnabled(enabled);
+       modeButton[4].setEnabled(enabled);
    }
    
    //Mode recherche
@@ -278,8 +336,28 @@ public class TP3 extends WindowAdapter implements ActionListener {
                components[j].setEnabled(false);
            }
        }
-   }
+       components[4].setBackground(GRIS);
+       components[5].setBackground(GRIS);
+       for(int k = 0; k < modeButton.length; k++) {
+            modeButton[k].setEnabled(false);
+            modeButton[k].setVisible(false);
+       }
+       modeButton[5].setVisible(true);
        
+       boolean enabled = true;
+       
+       if(listeEstVide()) {
+           enabled = false;
+       }
+       optionCategories[0].setEnabled(enabled);
+       optionCategories[1].setEnabled(enabled);
+       modeButton[5].setEnabled(enabled);
+   }
+
+/****************************************/
+/*    Initialization des panneaux       */
+/****************************************/
+   
    //initialize panneau du haut
    public void initPanneauHaut() {
        final int X = PADDING_X + 10;
@@ -355,13 +433,13 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        components[2] = new JComboBox();
        components[2].setBounds(x_Pos, labels[4].getY(), 360, 20);
-       //infos_film[2] = new JLabel();
-       //infos_film[2].setBounds(x_Pos, labels[4].getY(), 360, 20);
+       infos_film[2] = new JLabel();
+       infos_film[2].setBounds(x_Pos, labels[4].getY(), 360, 20);
        
        components[3] = new JComboBox();
        components[3].setBounds(x_Pos, labels[5].getY(), 360, 20);
-       //infos_film[3] = new JLabel();
-       //infos_film[3].setBounds(x_Pos, labels[5].getY(), 360, 20);
+       infos_film[3] = new JLabel();
+       infos_film[3].setBounds(x_Pos, labels[5].getY(), 360, 20);
        
        components[4] = new JTextArea();
        components[4].setBounds(x_Pos, labels[6].getY(), 360, 65);
@@ -371,15 +449,18 @@ public class TP3 extends WindowAdapter implements ActionListener {
        components[5].setBounds(x_Pos, labels[7].getY(), 180, 70);
        components[5].setBorder(new LineBorder(GRIS_FONCE, 1));
        
-       components[6] = new JButton("Ajouter categorie");
-       components[6].setBounds(components[5].getX() + components[5].getWidth() + 15, components[5].getY() + 5, 155, 20);
+       optionCategories[0] = new JButton("Ajouter categorie");
+       optionCategories[0].setBounds(components[5].getX() + components[5].getWidth() + 15, components[5].getY() + 5, 155, 20);
        
-       components[7] = new JButton("Supprimer categorie");
-       components[7].setBounds(components[5].getX() + components[5].getWidth() + 15, components[5].getY() + 45, 155, 20);
+       optionCategories[1] = new JButton("Supprimer categorie");
+       optionCategories[1].setBounds(components[5].getX() + components[5].getWidth() + 15, components[5].getY() + 45, 155, 20);
+       
        
        for(int i = 0; i < components.length; i++){
            millieu.add(components[i]);
        }
+       millieu.add(optionCategories[0]);
+       millieu.add(optionCategories[1]);
        /*for(int j = 0; j < components.length; j++){
            millieu.add(infos_film[j]);
        }*/
@@ -423,6 +504,22 @@ public class TP3 extends WindowAdapter implements ActionListener {
        }
    }      
    
+   public void quelModeSelectionner() {
+       if(mode[0].isSelected()) {
+           changerModeConsultation();
+       } else if(mode[2].isSelected()) {
+           changerModeModification();
+       }
+   }
+   
+   public void changerModeConsultation() {
+       String titre = collection.getSelectedItem().toString();
+   }
+   
+   public void changerModeModification() {
+       
+   }
+   
    //Ajoute un ActionListener a chaque boutton 
    public void ajouterActionListener() {
        for(int i = 0; i < mode.length; i++) {
@@ -431,6 +528,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
        for(int j = 0; j < modeButton.length; j++) {
            modeButton[j].addActionListener(this);
        }
+       optionCategories[0].addActionListener(this);
+       optionCategories[1].addActionListener(this);
    }
    
    //Ajoute les 3 panneau a la fenetre
