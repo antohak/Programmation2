@@ -236,7 +236,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode modification
    public void modeModification() {
-       collection.setEnabled(false);
+       collection.setEnabled(true);
        for(int i = 0; i < infos_film.length; i++) {
            infos_film[i].setVisible(false);
        }
@@ -244,7 +244,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
            if(j < 4) {
                components[j].setVisible(true);
                components[j].setEnabled(true);
-           } else if(j != 5 && j != 7){
+           } else if(j != 5){
                components[j].setEnabled(true);
            }
        }
@@ -254,13 +254,15 @@ public class TP3 extends WindowAdapter implements ActionListener {
             modeButton[k].setEnabled(false);
             modeButton[k].setVisible(false);
        }
-       modeButton[0].setEnabled(false);
-       modeButton[0].setVisible(false);
        
-       modeButton[1].setEnabled(false);
-       modeButton[1].setVisible(false);
+       modeButton[3].setVisible(true);//Boutton Modifier
+       modeButton[4].setVisible(true);//Boutton Modifier
        if(listeEstVide()) {
-           
+           modeButton[3].setEnabled(false);
+           modeButton[4].setEnabled(false);
+       } else {
+           modeButton[3].setEnabled(true);
+           modeButton[4].setEnabled(true);
        }
    }
    
