@@ -249,6 +249,9 @@ public class TP3 extends WindowAdapter implements ActionListener {
    }
    
    //Mode modification
+   /**
+    * 
+    */
    public void modeModification() {
        collection.setEnabled(true);
        for(int i = 0; i < infos_film.length; i++) {
@@ -708,6 +711,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
         arrayCategories[i] = arrayCategories[i].replaceAll("[^\\w]", "");
        }
        
+       //TODO: Titre: Ajouter les segments de titre
        if(!titre.equals("") && titre != null){
            for(Object video : collection){
                Video temp = (Video) video;
@@ -807,7 +811,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
            boolean type = false;
            if(elements[2].equals("FILM")){
                type = true;
-           }else if(elements[2].equals("TV")){
+           }else if(elements[2].equals("SÉRIE TV")){
                type = false;
            }else{
                System.out.println("Erreur TYPE");
@@ -831,3 +835,11 @@ public class TP3 extends WindowAdapter implements ActionListener {
        }
    }
 }
+
+/*
+
+RECHERCHE
+Bug: Ajout à Recherche ne change pas le bouton & Modification à Recherche n'ajoute pas le bouton
+TODO: 
+
+*/

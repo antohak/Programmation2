@@ -207,7 +207,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
      * nouvelle liste, contenant seulement l'element donne.
      * 
      * @param cle la cle d'association pour l'element donne.
-     * @param element l'element a associer a cle.
+     * @param element l'element a associe a cle.
      * @return true si l'element a ete ajoutee, faux sinon.
      * @throws NullPointerException si cle ou element est null.
      */
