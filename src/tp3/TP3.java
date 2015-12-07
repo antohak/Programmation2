@@ -1,3 +1,24 @@
+/**
+ * Antoine Hakim HAKA24019407
+ * Pierrick Michel MICP17049305
+ * 
+ * Sigle du cours : INF2120
+ * Groupe : 30
+ * Nom du professeur : Mélanie Lord
+ *
+ * @authors Antoine Hakim
+ *          ant.hakim.stud@Gmail.com
+ *          Pierrick Michel
+ *          LePmnin@Gmail.Com
+ *
+ * @description : Travail Pratique 03
+ *                  Création de programme de gestion de collections
+ *                  avec interface graphique
+ *
+ * @class : TP3
+ * @classDescription : Programme de gestion de collections avec interface graphique
+ */
+
 package tp3;
 
 import java.awt.Color;
@@ -16,8 +37,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
@@ -108,7 +127,6 @@ public class TP3 extends WindowAdapter implements ActionListener {
    private IListeAssociative<String, Video> liste;
    
    public TP3() {
-       
        //Init de Model
        initModele();
        
@@ -177,7 +195,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
 /******************************************/
    
     /**
-     * Gere les differents type de mmode choisis
+     * Gere les differents types de mode choisis
      * @param e
      */
     public void gererModeChoisis(ActionEvent e) {
@@ -206,32 +224,109 @@ public class TP3 extends WindowAdapter implements ActionListener {
     
     public void gererEventBouttons(ActionEvent e) {
         if(e.getSource() == modeButton[0]) { //Boutton precedent
+            //Verify
+            if(comboCollection.getItemAt(comboCollection.getSelectedIndex() - 1) == null){
+                
+            } else{
+
+                //Get
+                Video video = this.obtenirVideo(comboCollection.getItemAt(comboCollection.getSelectedIndex() - 1).toString()); //String titre
+                String catos = this.obtenirCategoriesEnString(comboCollection.getItemAt(comboCollection.getSelectedIndex() - 1).toString());
+                
+                //Place
+                
+            }
             
         } else if(e.getSource() == modeButton[1]) { //Boutton suivant
-            //Element.suivant()
+            //Verify
+            if(comboCollection.getItemAt(comboCollection.getSelectedIndex() + 1) == null){
+                
+            } else{
+
+                //Get
+                Video video = this.obtenirVideo(comboCollection.getItemAt(comboCollection.getSelectedIndex() + 1).toString()); //String titre
+
+                //Place
+            }
         } else if(e.getSource() == modeButton[2]) { //Boutton ajouter
+            //Verify
+            
+            boolean type = true;
+            /*
+            if(comboType.getSelectedItem()){
+                type = true;
+            } else{
+                type = false;
+            }
+            */
+            
+            int eval = comboEval.getSelectedIndex();
+            
+            //Place
+            this.ajouterVideo(textTitre.getText(), Integer.parseInt(textAnnee.getText()), type, eval, textCommentaires.getText(), textCategories.getText()); //String titre, int annee, boolean type, int eval, String comments, String categories
             
         } else if(e.getSource() == modeButton[3]) { //Boutton modifier
+            //Verify
+            
+            int eval = comboEval.getSelectedIndex();
+            
+            boolean type = true;
+            
+            //Place
+            this.modifierVideo(textTitre.getText(), Integer.parseInt(textAnnee.getText()), eval, type, textCommentaires.getText(), textCategories.getText()); //String titre, int annee, int eval, boolean type, String comments, String categories
+            
             
         } else if(e.getSource() == modeButton[4]) { //Boutton supprimer
+            //Verify
+            
+            //Place
+            this.supprimerVideo(comboCollection.getSelectedItem().toString()); //String titre
             
         } else if(e.getSource() == modeButton[5]) { //Boutton rechercher
+            
+            int eval = comboEval.getSelectedIndex();
+            
+            int type = 0;
+            
+            this.rechercherVideos(textTitre.getText(), Integer.parseInt(textAnnee.getText()), eval, type, textCategories.getText()); //String titre, int annee, int eval, boolean type, String categories
+            
             
         } else if(e.getSource() == optionCategories[0]) { //Boutton ajouter categorie
             JPanel popUpSelection = new JPanel();
             JComboBox selectionCategorie = new JComboBox();
+            
+            //Get
+            ArrayList catos = this.obtenirCategoriesEnArrayList(textTitre.getText()); //String titre
+            
+            for(Object cato : catos){
+                selectionCategorie.addItem(cato);
+            }
+            
+            /*
             selectionCategorie.addItem("test 1");
             selectionCategorie.addItem("test 2");
             selectionCategorie.addItem("test 3");
+            */
             popUpSelection.add(selectionCategorie);
             fenetre.getContentPane().add(popUpSelection);
             JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            
         } else if(e.getSource() == optionCategories[1]) { //Boutton supprimer categorie
             JPanel popUpSelection = new JPanel();
             JComboBox selectionCategorie = new JComboBox();
+            
+            //Get
+            ArrayList catos = this.obtenirCategoriesEnArrayList(textTitre.getText()); //String titre
+            
+            for(Object cato : catos){
+                selectionCategorie.addItem(cato);
+            }
+            
+            /*
             selectionCategorie.addItem("test 1");
             selectionCategorie.addItem("test 2");
             selectionCategorie.addItem("test 3");
+            */
             popUpSelection.add(selectionCategorie);
             fenetre.getContentPane().add(popUpSelection);
             JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -677,8 +772,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
    }
    
    
-   //Obtenir les categories d'une video
-   public String obtenirCategories(String titre){
+   //Obtenir les categories d'une video en String
+   public String obtenirCategoriesEnString(String titre){
        //Obtenir tous les <STRING,*> qui contiennent la video
        String categories = "";
        Video video = obtenirVideo(titre);
@@ -693,6 +788,23 @@ public class TP3 extends WindowAdapter implements ActionListener {
        //Remove last "\n"?
        if(!categories.equals("")){
            categories = categories.substring(0, categories.length() - 2);
+       }
+       
+       //Return
+       return categories;
+   }
+   
+   //Obtenir les categories d'une video en ArrayList
+   public ArrayList obtenirCategoriesEnArrayList(String titre){
+       //Obtenir tous les <STRING,*> qui contiennent la video
+       ArrayList categories = new ArrayList();
+       Video video = obtenirVideo(titre);
+       ArrayList arrayCategories = liste.obtenirCles();
+       
+       for(Object categorie : arrayCategories){
+           if(liste.obtenirElements((String)categorie).contains(video)){
+               categories.add(categorie);
+           }
        }
        
        //Return
@@ -836,11 +948,11 @@ public class TP3 extends WindowAdapter implements ActionListener {
         arrayCategories[i] = arrayCategories[i].replaceAll("[^\\w]", "");
        }
        
-       //TODO: Titre: Ajouter les segments de titre
+       //TODO: Titre: Ajouter les segments de titre DONE, TO VERIFY
        if(!titre.equals("") && titre != null){
            for(Object video : collection){
                Video temp = (Video) video;
-               if(!temp.getTitre().equals(titre)){
+               if(!temp.getTitre().contains(titre)){
                    collection.remove(video);
                }
            }
@@ -894,6 +1006,34 @@ public class TP3 extends WindowAdapter implements ActionListener {
        final String PATH = "./videos.txt";
        File fichier = new File(PATH);
        String formatDeSortie = "";
+       
+       //this.obtenirCollection();
+       //this.obtenirCategoriesEnArrayList();
+       
+       //TODO
+       
+       for(Object video : this.obtenirCollection()){
+           Video vid = (Video)video;
+           String catos = this.obtenirCategoriesEnString(vid.getTitre());
+           
+           formatDeSortie += vid.getTitre() + "::";
+           formatDeSortie += vid.getAnnee() + "::";
+           if(vid.isFilm()){
+               formatDeSortie += "FILM" + "::";
+           } else{
+               formatDeSortie += "SÉRIE TV" + "::";
+           }
+           formatDeSortie += vid.getEval() + "::"; //vid.getEval();
+           formatDeSortie += ""; //Comments
+           formatDeSortie += ""; //Catos
+           formatDeSortie += "\n";
+           
+       }
+       
+       formatDeSortie.substring(0, formatDeSortie.length() - 2);
+       
+       
+       
        try {
             FileWriter ecrivain = new FileWriter(fichier);
             ecrivain.write(formatDeSortie);
@@ -943,9 +1083,9 @@ public class TP3 extends WindowAdapter implements ActionListener {
            String titre = elements[0];
            int annee = Integer.parseInt(elements[1]);
            boolean type = false;
-           if(elements[2].equals("FILM")){
+           if(elements[2].toString().equals("FILM")){
                type = true;
-           }else if(elements[2].equals("SÉRIE TV")){
+           }else if(elements[2].toString().equals("SÉRIE TV")){
                type = false;
            }else{
                System.out.println("Erreur TYPE");
@@ -968,4 +1108,10 @@ public class TP3 extends WindowAdapter implements ActionListener {
            }
        }
    }
+   
+   //Méthode personnelle pour montrer les erreurs graphiquement
+    private void messageErreur(String message) {
+        JOptionPane.showMessageDialog(null, message, "ERREUR", JOptionPane.ERROR_MESSAGE, UIManager.getIcon("OptionPane.errorIcon"));
+        System.exit(1);
+    }
 }
