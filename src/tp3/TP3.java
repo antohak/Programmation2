@@ -58,7 +58,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    public final static Color GRIS_FONCE = new Color(171, 171, 171);
 
-   //fichiers texte contentant la listeCollectionDeroulante de videos
+   //fichiers texte contentant la comboCollection de videos
    public final static String FIC_VIDEOS = "videos.txt";
 
 
@@ -79,18 +79,22 @@ public class TP3 extends WindowAdapter implements ActionListener {
    private JPanel haut = new JPanel();
    private JPanel millieu = new JPanel();
    private JPanel bas = new JPanel();
-   
-   //Tableaux de components
+   //Components du panneau de haut sauf pour labels qui sont pour haut et millieu
    private JLabel[] labels = new JLabel[8];
-   private JLabel[] infos_film = new JLabel[4];
-   private JComponent[] components = new JComponent [6];
    private JRadioButton[] mode = new JRadioButton [4];
+   //Collection de films
+   private JComboBox comboCollection = new JComboBox();
+   //Components du panneau milleu
+   private JComboBox comboType = new JComboBox();
+   private JComboBox comboEval = new JComboBox();
+   private JTextArea textCommentaires = new JTextArea();
+   private JTextArea textCategories = new JTextArea();
+   private JTextField textTitre = new JTextField();
+   private JTextField textAnnee = new JTextField();
    private JButton[] modeButton = new JButton [6];
    private JButton[] optionCategories = new JButton[2];
-   
-   //Liste deroulante
-   private JComboBox listeCollectionDeroulante = new JComboBox();
-   
+   private JLabel[] infos_film = new JLabel[4];
+   //Liste associative avec cles de type String et information de type Video
    private IListeAssociative<String, Video> collection = new ListeAssociativeChainee();
    
    
@@ -241,19 +245,22 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode consultation
    public void modeConsultation() {
-       listeCollectionDeroulante.setEnabled(true);
-       for(int i = 0; i < components.length; i++) {
-           if( i < 4) {
-               components[i].setVisible(false);
-           } else {
-               components[i].setEnabled(false);
-           }
-       }
+       comboCollection.setEnabled(true);
+       
+       textTitre.setVisible(false);
+       textAnnee.setVisible(false);
+       comboType.setVisible(false);
+       comboEval.setVisible(false);
+       
+       textCommentaires.setEnabled(false);
+       textCategories.setEnabled(false);
+       
+       textCommentaires.setBackground(GRIS);
+       textCategories.setBackground(GRIS);
+       
        for(int k = 0; k < infos_film.length; k++) {
            infos_film[k].setVisible(true);
        }
-       components[4].setBackground(GRIS);
-       components[5].setBackground(GRIS);
        
        for(int l = 0; l < modeButton.length; l++) {
            if(l < 2) {
@@ -270,22 +277,31 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode ajout
    public void modeAjout() {
-       listeCollectionDeroulante.setEnabled(false);
+       comboCollection.setEnabled(false);
+       
+       textTitre.setVisible(true);
+       textTitre.setEnabled(true);
+       textAnnee.setVisible(true);
+       textAnnee.setEnabled(true);
+       comboType.setVisible(true);
+       comboType.setEnabled(true);
+       comboEval.setVisible(true);
+       comboEval.setEnabled(true);
+       
+       textCommentaires.setEnabled(true);
+       textCategories.setEnabled(true);
+       textCategories.setEditable(false);
+       
+       textCommentaires.setBackground(Color.WHITE);
+       textCategories.setBackground(GRIS);
+       
+       optionCategories[0].setEnabled(true);
+       optionCategories[1].setEnabled(false);
+       
        for(int i = 0; i < infos_film.length; i++) {
            infos_film[i].setVisible(false);
        }
-       for(int j = 0; j < components.length; j++) { 
-           if(j < 4) {
-               components[j].setVisible(true);
-               components[j].setEnabled(true);
-           } else if(j != 5){
-               components[j].setEnabled(true);
-           }
-       }
-       optionCategories[0].setEnabled(true);
-       optionCategories[1].setEnabled(false);
-       components[4].setBackground(Color.WHITE);
-       
+
        for(int k = 0; k < modeButton.length; k++) {
            if(k == 2) {
                modeButton[k].setEnabled(true);
@@ -299,21 +315,27 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode modification
    public void modeModification() {
-       listeCollectionDeroulante.setEnabled(true);
+       comboCollection.setEnabled(true);
+       
+       textTitre.setVisible(true);
+       textTitre.setEnabled(true);
+       textAnnee.setVisible(true);
+       textAnnee.setEnabled(true);
+       comboType.setVisible(true);
+       comboType.setEnabled(true);
+       comboEval.setVisible(true);
+       comboEval.setEnabled(true);
+       
+       textCommentaires.setEnabled(true);
+       textCategories.setEnabled(false);
+       textCategories.setEditable(false);
+       
+       textCommentaires.setBackground(Color.WHITE);
+       textCategories.setBackground(GRIS);
+       
        for(int i = 0; i < infos_film.length; i++) {
            infos_film[i].setVisible(false);
        }
-       for(int j = 0; j < components.length; j++) { 
-           if(j < 4) {
-               components[j].setVisible(true);
-               components[j].setEnabled(true);
-           } else if(j != 5){
-               components[j].setEnabled(true);
-           }
-       }
-       
-       components[4].setBackground(Color.WHITE);
-       components[5].setBackground(GRIS);
        
        for(int k = 0; k < modeButton.length; k++) {
             modeButton[k].setEnabled(false);
@@ -332,17 +354,24 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode recherche
    public void modeRecherche() {
-       listeCollectionDeroulante.setEnabled(false);
-       for(int j = 0; j < components.length; j++) { 
-           if(j < 3) {
-               components[j].setVisible(true);
-               components[j].setEnabled(true);
-           } else {
-               components[j].setEnabled(false);
-           }
-       }
-       components[4].setBackground(GRIS);
-       components[5].setBackground(GRIS);
+       comboCollection.setEnabled(false);
+       
+       textTitre.setVisible(true);
+       textTitre.setEnabled(true);
+       textAnnee.setVisible(true);
+       textAnnee.setEnabled(true);
+       comboType.setVisible(true);
+       comboType.setEnabled(true);
+       comboEval.setVisible(true);
+       comboEval.setEnabled(false);
+       
+       textCommentaires.setEnabled(false);
+       textCategories.setEnabled(false);
+       textCategories.setEditable(false);
+       
+       textCommentaires.setBackground(GRIS);
+       textCategories.setBackground(GRIS);
+   
        for(int k = 0; k < modeButton.length; k++) {
             modeButton[k].setEnabled(false);
             modeButton[k].setVisible(false);
@@ -398,8 +427,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
    public void initPanneauHautComponents() {
        int y_Pos = labels[1].getY() - 5;
        
-       listeCollectionDeroulante = new JComboBox();
-       listeCollectionDeroulante.setBounds(labels[0].getX() + labels[0].getWidth(), labels[0].getY(), 
+       comboCollection = new JComboBox();
+       comboCollection.setBounds(labels[0].getX() + labels[0].getWidth(), labels[0].getY(), 
                             haut.getWidth() - (labels[0].getX() + labels[0].getWidth()), 20);
 
        mode[0] = new JRadioButton(radio_text[0]);
@@ -415,7 +444,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        mode[3] = new JRadioButton(radio_text[3]);
        mode[3].setBounds(mode[2].getX() + mode[2].getWidth() + 5, y_Pos, 100, 30);
        
-       haut.add(listeCollectionDeroulante);
+       haut.add(comboCollection);
        
        for(int j = 0; j < mode.length; j++) {
            haut.add(mode[j]);
@@ -426,44 +455,48 @@ public class TP3 extends WindowAdapter implements ActionListener {
    public void initPanneauMillieuComponents() {
        int x_Pos = millieu.getX() + 100;
        
-       components[0] = new JTextField();
-       components[0].setBounds(x_Pos, labels[2].getY() - 5, 360, 25);
+       textTitre = new JTextField();
+       textTitre.setBounds(x_Pos, labels[2].getY() - 5, 360, 25);
        infos_film[0] = new JLabel();
        infos_film[0].setBounds(x_Pos, labels[2].getY() - 5, 360, 25);
        
-       components[1] = new JTextField();
-       components[1].setBounds(x_Pos, labels[3].getY() - 5, 360, 25);
+       textAnnee = new JTextField();
+       textAnnee.setBounds(x_Pos, labels[3].getY() - 5, 360, 25);
        infos_film[1] = new JLabel();
        infos_film[1].setBounds(x_Pos, labels[3].getY() - 5, 360, 25);
        
-       components[2] = new JComboBox();
-       components[2].setBounds(x_Pos, labels[4].getY(), 360, 20);
+       comboType = new JComboBox();
+       comboType.setBounds(x_Pos, labels[4].getY(), 360, 20);
        infos_film[2] = new JLabel();
        infos_film[2].setBounds(x_Pos, labels[4].getY(), 360, 20);
        
-       components[3] = new JComboBox();
-       components[3].setBounds(x_Pos, labels[5].getY(), 360, 20);
+       comboEval = new JComboBox();
+       comboEval.setBounds(x_Pos, labels[5].getY(), 360, 20);
        infos_film[3] = new JLabel();
        infos_film[3].setBounds(x_Pos, labels[5].getY(), 360, 20);
        
-       components[4] = new JTextArea();
-       components[4].setBounds(x_Pos, labels[6].getY(), 360, 65);
-       components[4].setBorder(new LineBorder(GRIS_FONCE, 1));
+       textCommentaires = new JTextArea();
+       textCommentaires.setBounds(x_Pos, labels[6].getY(), 360, 65);
+       textCommentaires.setBorder(new LineBorder(GRIS_FONCE, 1));
        
-       components[5] = new JTextArea();
-       components[5].setBounds(x_Pos, labels[7].getY(), 180, 70);
-       components[5].setBorder(new LineBorder(GRIS_FONCE, 1));
+       textCategories = new JTextArea();
+       textCategories.setBounds(x_Pos, labels[7].getY(), 180, 70);
+       textCategories.setBorder(new LineBorder(GRIS_FONCE, 1));
        
        optionCategories[0] = new JButton("Ajouter categorie");
-       optionCategories[0].setBounds(components[5].getX() + components[5].getWidth() + 15, components[5].getY() + 5, 155, 20);
+       optionCategories[0].setBounds(textCategories.getX() + textCategories.getWidth() + 15, textCategories.getY() + 5, 155, 20);
        
        optionCategories[1] = new JButton("Supprimer categorie");
-       optionCategories[1].setBounds(components[5].getX() + components[5].getWidth() + 15, components[5].getY() + 45, 155, 20);
+       optionCategories[1].setBounds(textCategories.getX() + textCategories.getWidth() + 15, textCategories.getY() + 45, 155, 20);
        
+
+       millieu.add(textTitre);
+       millieu.add(textAnnee);
+       millieu.add(comboType);
+       millieu.add(comboEval);
+       millieu.add(textCommentaires);
+       millieu.add(textCategories);
        
-       for(int i = 0; i < components.length; i++){
-           millieu.add(components[i]);
-       }
        millieu.add(optionCategories[0]);
        millieu.add(optionCategories[1]);
        /*for(int j = 0; j < components.length; j++){
@@ -518,7 +551,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    }
    
    public void changerModeConsultation() {
-       String titre = listeCollectionDeroulante.getSelectedItem().toString();
+       String titre = comboCollection.getSelectedItem().toString();
    }
    
    public void changerModeModification() {
