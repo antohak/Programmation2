@@ -1,0 +1,9 @@
+Le roi pêcheur et le chasseur de lions::2000::FILM::3::::Fantastique::Pour enfant::Animation
+Le petit roi Toto::1998::FILM::5::Vraiment bon ! [*]Les acteurs sont justes et vraies[*]Un commentaire vraiment long pour que l'on puisse voir la barre de défilement verticale.::Drame::Film du monde::Historique
+Toto le héro::2000::FILM::4::::Drame::Film du monde
+Monsieur pêche à la mouche - saison 1::2000::SÉRIE TV::3::::Documentaire
+Le petit lion et la grosse fourmie bleue::2000::FILM::2::Film très sympathique. [*]Ma nièce a adoré !::Fantastique::Pour enfant::Animation
+Mon voisin Totoro::1998::FILM::3::Mignon.[*]3 ans et plus::Animation
+Peur bleue - saison 1::2000::SÉRIE TV::0::::Fantastique::Horreur
+Peur bleue - saison 2::2001::SÉRIE TV::3::Les acteurs sont moyens, mais l'intrigue est excellente::Fantastique::Horreur
+Peur bleue - saison 3::2002::SÉRIE TV::4::Encore meilleur que la saison 2.::Fantastique::Horreur
