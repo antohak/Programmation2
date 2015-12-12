@@ -403,9 +403,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
             
         } else if(e.getSource() == optionCategories[0]) { //Boutton ajouter categorie
             //Get     
-            if(mode[1].isSelected()) {
-                
-            } else if(mode[2].isSelected()) {
+            
                 String [] categoriesDuFilm = textCategories.getText().split("\\n");
                 ArrayList listeDeCategories = ArrayToArrayList(categoriesDuFilm);
                 if(listeDeCategories != null || !listeDeCategories.isEmpty()) {
@@ -432,7 +430,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
                                         System.out.println("ici");
                                         textCategories.setText(textCategories.getText() + "\n" + categorieEntree);
                                     }
-                                    
+                                    optionCategories[1].setEnabled(true);
                                 } else {
                                     messageErreur("Categorie existe deja.");
                                 }
@@ -446,7 +444,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
                     case 1:
                         break;
                 }                
-            }
+            
  
         } else if(e.getSource() == optionCategories[1]) { //Boutton supprimer categorie
             //Get
