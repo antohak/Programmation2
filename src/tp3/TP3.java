@@ -124,6 +124,10 @@ public class TP3 extends WindowAdapter implements ActionListener {
    private JButton[] optionCategories = new JButton[2];
    private JLabel[] infos_film = new JLabel[4];
    
+   JPanel popUpSelection = new JPanel();
+   JTextField nouvelleCategorie = new JTextField();
+   JComboBox selectionCategorie = new JComboBox();
+   
    private IListeAssociative<String, Video> liste;
    
    public TP3() {
@@ -398,50 +402,112 @@ public class TP3 extends WindowAdapter implements ActionListener {
             
             
         } else if(e.getSource() == optionCategories[0]) { //Boutton ajouter categorie
-            JPanel popUpSelection = new JPanel();
-            JTextField nouvelleCategorie = new JTextField();
-            JComboBox selectionCategorie = new JComboBox();
-            
-            //Get
-            ArrayList catos = this.obtenirCategoriesEnArrayList(textTitre.getText()); //String titre
-            
-            for(Object cato : catos){
-                selectionCategorie.addItem(cato);
+            //Get     
+            if(mode[1].isSelected()) {
+                
+            } else if(mode[2].isSelected()) {
+                String [] categoriesDuFilm = textCategories.getText().split("\\n");
+                ArrayList listeDeCategories = ArrayToArrayList(categoriesDuFilm);
+                if(listeDeCategories != null || !listeDeCategories.isEmpty()) {
+                    selectionCategorie = ajouterCategoriesDansListeDeroulante(selectionCategorie, listeDeCategories, 0);
+                } else {
+                    textCategories.setText("");
+                    selectionCategorie.addItem("Autres...");
+                }
+                popUpSelection.add(selectionCategorie);
+                fenetre.getContentPane().add(popUpSelection);
+                int action = JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+                switch(action) {
+                    case 0 :
+                        if(((String)selectionCategorie.getSelectedItem()).equals("Autres...")) {
+                            popUpSelection.remove(selectionCategorie);
+                            String categorieEntree = JOptionPane.showInputDialog(popUpSelection, "Ajouter une categorie");
+                            if(categorieEntree != null) {
+                                if(!categorieExiste(listeDeCategories, categorieEntree)) {
+                                    System.out.println(listeDeCategories);
+                                    if(listeDeCategories.isEmpty()) {
+                                        textCategories.setText(textCategories.getText() + categorieEntree);
+                                    } else {
+                                        System.out.println("ici");
+                                        textCategories.setText(textCategories.getText() + "\n" + categorieEntree);
+                                    }
+                                    
+                                } else {
+                                    messageErreur("Categorie existe deja.");
+                                }
+                            } else {
+                                messageErreur("Entree null ou vide!");
+                            }
+                        } else {
+                            messageErreur("Categorie existe deja.");
+                        }
+                        break;
+                    case 1:
+                        break;
+                }                
             }
-            
-            /*
-            selectionCategorie.addItem("test 1");
-            selectionCategorie.addItem("test 2");
-            selectionCategorie.addItem("test 3");
-            */
-            
-            popUpSelection.add(nouvelleCategorie);
-            fenetre.getContentPane().add(popUpSelection);
-            JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-            
+ 
         } else if(e.getSource() == optionCategories[1]) { //Boutton supprimer categorie
-            JPanel popUpSelection = new JPanel();
-            JComboBox selectionCategorie = new JComboBox();
-            
             //Get
-            ArrayList catos = this.obtenirCategoriesEnArrayList(textTitre.getText()); //String titre
-            
-            for(Object cato : catos){
-                selectionCategorie.addItem(cato);
+            String [] categoriesDuFilm = textCategories.getText().trim().split("\\n");
+            ArrayList listeDeCategories = ArrayToArrayList(categoriesDuFilm);
+            if(listeDeCategories != null || !listeDeCategories.isEmpty()) {
+                selectionCategorie = ajouterCategoriesDansListeDeroulante(selectionCategorie, listeDeCategories, 1);
             }
-            
-            /*
-            selectionCategorie.addItem("test 1");
-            selectionCategorie.addItem("test 2");
-            selectionCategorie.addItem("test 3");
-            */
-            
             popUpSelection.add(selectionCategorie);
             fenetre.getContentPane().add(popUpSelection);
-            JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int action = JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            switch(action) {
+                case 0 :
+                    String categorieASupprimer = (String) selectionCategorie.getSelectedItem();
+                    
+                    String output = "";
+                    if(!listeDeCategories.isEmpty()) {
+                        listeDeCategories.remove(categorieASupprimer);
+                        for(int i = 0; i < listeDeCategories.size(); i++) {
+                            output += (String) listeDeCategories.get(i);
+                            if(i + 1 != listeDeCategories.size()) {
+                                output += "\n";
+                            }
+                        }
+                        textCategories.setText(output);
+                    } else {
+                        optionCategories[1].setEnabled(false);
+                    }
+                    break;
+                case 1:
+                    break;
+            }            
         }
     }
+
+    public JComboBox ajouterCategoriesDansListeDeroulante(JComboBox liste, ArrayList categories, int option) {
+        //Option 0 c'est parce qu'on est sur sur l'option d'ajouter une categorie
+        //L'option 1 c'est parce qu'on est sur l'option de supprimer une categorie
+        liste.removeAllItems();
+        if(option == 0) {
+            liste.addItem("Autres...");
+        }
+        for(Object c : categories) {
+            liste.addItem( (String) c);
+        }
+        return liste;
+    }
+    public ArrayList ArrayToArrayList(String [] liste) {
+        ArrayList listeTransformer = new ArrayList();
+        for(Object element : liste) {
+            listeTransformer.add( (String) element);
+        }
+        return listeTransformer;
+    }
     
+    public boolean categorieExiste(ArrayList liste, String categorie) {
+        if(liste.contains(categorie)) {
+            return true;
+        }
+        return false;
+    }
 /****************************************/
 /* Les 5 type de mode: Depart,          */
 /* Cosultation, Ajout, Modification et  */
@@ -615,6 +681,9 @@ public class TP3 extends WindowAdapter implements ActionListener {
        String titre = (String) comboCollection.getSelectedItem();
        System.out.println(titre);
        afficherFilmChoisis(titre);
+       
+       optionCategories[0].setEnabled(true); //Boutton ajouter categorie
+       optionCategories[1].setEnabled(true);
        /*Video video = this.obtenirVideo(comboCollection.getSelectedItem().toString());
        String catos = this.obtenirCategoriesEnString(comboCollection.getSelectedItem().toString());
        
