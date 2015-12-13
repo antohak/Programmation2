@@ -633,9 +633,11 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        textTitre.setVisible(true);
        textTitre.setEnabled(true);
+       textTitre.setEditable(true);
        
        textAnnee.setVisible(true);
        textAnnee.setEnabled(true);
+       textAnnee.setEditable(true);
        
        comboType.setVisible(true);
        comboType.setEnabled(true);
