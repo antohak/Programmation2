@@ -181,8 +181,10 @@ public class TP3 extends WindowAdapter implements ActionListener {
        } else if(e.getSource() instanceof JButton) { 
            gererEventBouttons(e);
        } else if(e.getSource() instanceof JComboBox) {
+           resetCollection();
+           loadCollection();
            String titre = (String) comboCollection.getSelectedItem();
-           System.out.println(titre);
+           //System.out.println(titre);
            afficherFilmChoisis(titre);
        }
    }
@@ -520,6 +522,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode consultation
    public void modeConsultation() {
+       loadCollection();
        comboCollection.setEnabled(true);
        
        textTitre.setVisible(false);
@@ -561,8 +564,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        //Get the collection and place in combobox
        //this.obtenirCollection();
-       resetCollection();
-       loadCollection();
+       
 
        //Place the first element of combobox in the grid
        comboCollection.setSelectedIndex(0);
@@ -582,6 +584,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode ajout
    public void modeAjout() {
+       loadCategorie();
        comboCollection.setEnabled(false);
        
        textTitre.setVisible(true);
@@ -627,12 +630,12 @@ public class TP3 extends WindowAdapter implements ActionListener {
                modeButton[k].setEnabled(false);
                modeButton[k].setVisible(false);
            }
-       }
-       loadCategorie();
+       } 
    }
    
    //Mode modification
    public void modeModification() {
+       loadCategorie();
        comboCollection.setEnabled(true);
        
        textTitre.setVisible(true);
@@ -677,8 +680,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        //Get the collection and place in combobox
        //this.obtenirCollection();
-       resetCollection();
-       loadCollection();
+       
        
        //Place the first element of combobox in the grid
        comboCollection.setSelectedIndex(0);
@@ -687,7 +689,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        optionCategories[0].setEnabled(true); //Boutton ajouter categorie
        optionCategories[1].setEnabled(true);
-       loadCategorie();
+       
        /*Video video = this.obtenirVideo(comboCollection.getSelectedItem().toString());
        String catos = this.obtenirCategoriesEnString(comboCollection.getSelectedItem().toString());
        
@@ -705,6 +707,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode recherche
    public void modeRecherche() {
+       loadCategorie();
        comboCollection.setEnabled(false);
        
        textTitre.setVisible(true);
@@ -745,7 +748,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        optionCategories[0].setEnabled(enabled);
        optionCategories[1].setEnabled(enabled);
        modeButton[5].setEnabled(enabled);
-       loadCategorie();
+       
    }
 
 /****************************************/
@@ -919,7 +922,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //MODEL
    private void initModele(){
-       liste = new ListeAssociativeChainee<String, Video>();
+       liste = new ListeAssociativeChainee<>();
        
        try {
            charger();
@@ -929,11 +932,13 @@ public class TP3 extends WindowAdapter implements ActionListener {
    }
    
    public void resetCollection() {
-       comboCollection.removeAll();
+       comboCollection.removeAllItems();
+       //System.out.println();
    }
    
    public void loadCollection() {
        ArrayList<Video> collections = obtenirCollection();
+       System.out.println(collections.toString());
        for(Video video : collections) {
            comboCollection.addItem(video.getTitre());
        }
@@ -1111,19 +1116,16 @@ public class TP3 extends WindowAdapter implements ActionListener {
            //Creer un objet video avec TITRE ANNEE TYPE EVAL COMMENTS
            Video video = new Video(titre, annee, eval, type);
            video.setCommentaires(comments);
-           System.out.println(video.getTitre() + " 1");
            //Convert categories to array and place in arrayCategories
            String[] arrayCategories = categories.split("\\s+");
            
            for (int i = 0; i < arrayCategories.length; i++) {
             arrayCategories[i] = arrayCategories[i].replaceAll("[^\\w]", "");
            }
-           System.out.println(video.getTitre() + " 2");
            //Ajouter cette video dans toutes les categories
            for(Object categorie : arrayCategories){
                liste.ajouter((String)categorie, video);
            }
-           System.out.println(video.getTitre() + " 3");
            JOptionPane.showMessageDialog(fenetre, video.getTitre() + " ajouter a la liste!");
            return true;  
        } catch (Exception ex) {
@@ -1165,7 +1167,6 @@ public class TP3 extends WindowAdapter implements ActionListener {
        boolean confirmation = false;
        
        for(Object categorie : arrayCategories){
-           //liste.obtenirIndex();
            indexOfVideo = liste.obtenirIndex((String)categorie, oldVideo);
            if(indexOfVideo >= 0){
                confirmation = liste.modifier((String)categorie, video, indexOfVideo);
@@ -1212,7 +1213,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        String[] arrayCategories = categories.split("\\s+");
        //Little StackOverflow fix
        for(int i = 0; i < arrayCategories.length; i++) {
-        arrayCategories[i] = arrayCategories[i].replaceAll("[^\\w]", "");
+           arrayCategories[i] = arrayCategories[i].replaceAll("[^\\w]", "");
        }
        
        //TODO: Titre: Ajouter les segments de titre DONE, TO VERIFY
