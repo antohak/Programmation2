@@ -413,12 +413,9 @@ public class TP3 extends WindowAdapter implements ActionListener {
             
                 String [] categoriesDuFilm = textCategories.getText().split("\\n");
                 ArrayList listeDeCategories = ArrayToArrayList(categoriesDuFilm);
-                if(listeDeCategories != null || !listeDeCategories.isEmpty()) {
-                    selectionCategorie = ajouterCategoriesDansListeDeroulante(selectionCategorie, listeDeCategories, 0);
-                } else {
+                /*if(listeDeCategories == null || listeDeCategories.isEmpty()) {
                     textCategories.setText("");
-                    selectionCategorie.addItem("Autres...");
-                }
+                }*/
                 popUpSelection.add(selectionCategorie);
                 fenetre.getContentPane().add(popUpSelection);
                 int action = JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -513,6 +510,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
         for(String categorie : collectionCategorie) {
             selectionCategorie.addItem(categorie);
         }
+        selectionCategorie.addItem("Autres...");
     }
 /****************************************/
 /* Les 5 type de mode: Depart,          */
@@ -630,6 +628,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
                modeButton[k].setVisible(false);
            }
        }
+       loadCategorie();
    }
    
    //Mode modification
@@ -970,18 +969,19 @@ public class TP3 extends WindowAdapter implements ActionListener {
    //Obtenir toutes les videos
    public ArrayList obtenirCollection(){
        //Obtenir toutes les videos en naviguant dans les categories
-       ArrayList videos = new ArrayList<Video>();
-       ArrayList categories = liste.obtenirCles();
+       ArrayList<Video> videos = new ArrayList<>();
+       ArrayList<String> categories = liste.obtenirCles();
        
-       for(Object categorie : categories){
-           ArrayList videosOfCategorie = liste.obtenirElements((String)categorie);;
-           for(Object vid : videosOfCategorie){
+       for(String categorie : categories){
+           ArrayList<Video> videosOfCategorie = liste.obtenirElements(categorie);
+           for(Video vid : videosOfCategorie){
                if(!videos.contains(vid)){
                    videos.add(vid);
+                   System.out.println(vid.getTitre());
                }
-           }
+           } 
        }
-       
+
        //Return
        return videos;
    }
@@ -1303,10 +1303,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
            formatDeSortie += "::";
            
            formatDeSortie += catos; //Catos
-           formatDeSortie += "\n";
-           
-           //System.out.println(formatDeSortie);
-           
+           formatDeSortie += "\r\n"; //Petit fixe pour que les new lines append au fichier txt
        }
        
        formatDeSortie = formatDeSortie.substring(0, formatDeSortie.length() - 1);
@@ -1356,9 +1353,9 @@ public class TP3 extends WindowAdapter implements ActionListener {
            int annee = Integer.parseInt(elements[1]);   
            boolean type = false;
            
-           if(elements[2].toString().equals("FILM")){
+           if(elements[2]/*.toString()*/.equals("FILM")){
                type = true;
-           }else if(elements[2].toString().equals("SÉRIE TV")){
+           }else if(elements[2]/*.toString()*/.equals("SÉRIE TV")){
                type = false;
            }else{
                System.out.println("Erreur TYPE");
@@ -1368,7 +1365,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
            Video video = new Video(titre, annee, eval, type);         
            video.setCommentaires(commentaires);       
            for(int i = 5; i < elements.length; i++){
-               System.out.println("element" + elements[i]);
+               //System.out.println("element" + elements[i]);
                liste.ajouter(elements[i], video);
            }
        }
