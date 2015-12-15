@@ -405,10 +405,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
              0: FILM
              1: SERIE TV
             */
-            boolean type = false;
-            if(comboType.getSelectedIndex() - 1 == 0){
-                type = true;
-            } 
+            int type = comboType.getSelectedIndex() - 1;
             Video videoTrouver = rechercherVideos(textTitre.getText(), Integer.parseInt(textAnnee.getText()), eval, type, textCategories.getText());
             
         } else if(e.getSource() == optionCategories[0]) { //Boutton ajouter categorie
@@ -1201,22 +1198,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
    //Recherche avec les informations dans TITRE, ANNEE, TYPE, EVALUATION, COMMENTAIRES, CATEGORIES en &&
    //Considère les champs vides comme des */ALL
    //Donne un array de videos qui respecte la query
-   public Video rechercherVideos(String titre, int annee, int eval, boolean type, String categories){
-       try {
-            Video videoRechercher = new Video(titre, annee, eval, type);
-            ArrayList<String> collection = liste.obtenirCles();
-            
-            for(String categorie : collection) {
-                ArrayList<Video> collectionVideo = liste.obtenirElements(categorie);
-                if(collectionVideo.contains(videoRechercher)) {
-                    return videoRechercher;
-                }
-            }
-       } catch (Exception e) {
-           e.getMessage();
-       }
-       return null;
-       /*ArrayList collection = new ArrayList();
+   public Video rechercherVideos(String titre, int annee, int eval, int type, String categories){
+       ArrayList collection = new ArrayList();
        for(Object categorie : liste.obtenirCles()){
            for(Object video : liste.obtenirElements((String)categorie)){
                if(!collection.contains(video)){
@@ -1281,7 +1264,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
             }
        }
        
-       return (Video) collection.get(0);*/
+       return (Video) collection.get(0);
        
    }
    
