@@ -181,11 +181,10 @@ public class TP3 extends WindowAdapter implements ActionListener {
        } else if(e.getSource() instanceof JButton) { 
            gererEventBouttons(e);
        } else if(e.getSource() instanceof JComboBox) {
-           resetCollection();
-           loadCollection();
            String titre = (String) comboCollection.getSelectedItem();
-           //System.out.println(titre);
-           afficherFilmChoisis(titre);
+           if(titre != null) {
+                afficherFilmChoisis(titre);
+           }
        }
    }
    
@@ -522,6 +521,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode consultation
    public void modeConsultation() {
+       resetCollection();
        loadCollection();
        comboCollection.setEnabled(true);
        
@@ -584,6 +584,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode ajout
    public void modeAjout() {
+       resetCollection();
+       loadCollection();
        loadCategorie();
        comboCollection.setEnabled(false);
        
@@ -635,6 +637,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode modification
    public void modeModification() {
+       resetCollection();
+       loadCollection();
        loadCategorie();
        comboCollection.setEnabled(true);
        
@@ -707,6 +711,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Mode recherche
    public void modeRecherche() {
+       resetCollection();
+       loadCollection();
        loadCategorie();
        comboCollection.setEnabled(false);
        
