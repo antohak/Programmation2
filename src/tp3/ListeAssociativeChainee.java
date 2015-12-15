@@ -227,6 +227,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
         
         //Cas si la cle existe
         if(this.cleExiste(cle)){
+            //System.out.println("Cle existe " + cle.toString());
             if(!this.elementExiste(cle, element)){
                 /* M�thode � Arrays */
                 ArrayList arrayElements = this.obtenirElements(cle);
@@ -242,6 +243,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
         
         //Cas si la cle n'existe pas
         else{
+            //.out.println("Cle existe pas " + cle.toString());
             //Ajouter cle � la fin de la chaine
             Maillon<C> clesIterator = cles;
             Maillon<Maillon<E>> elementsIterator = elements;
@@ -814,6 +816,7 @@ public class ListeAssociativeChainee<C, E> implements IListeAssociative {
         boolean endOfCles = false;
         
         while(!endOfCles){
+            
             boolean elementInCle = false;
             
             elementIterator = elementsIterator.info();
