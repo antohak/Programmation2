@@ -341,9 +341,12 @@ public class TP3 extends WindowAdapter implements ActionListener {
             
         } else if(e.getSource() == modeButton[3]) { //Boutton modifier
             //Verify
+            System.out.println(textTitre.getText());
+            System.out.println(textAnnee.getText());
+            System.out.println(textCommentaires.getText());
             if(textTitre.getText() == null || textTitre.getText().equals("")){
                 messageErreur("Pas de titre");
-            } else if(textAnnee.getText() == null || textAnnee.getText().equals("") || textAnnee.getText().matches("^[0-9]+$")){
+            } else if(textAnnee.getText() == null || textAnnee.getText().equals("") || !textAnnee.getText().matches("^[0-9]+$")){
                 messageErreur("Pas d'annee ou annee NaN");
             } else if(textCommentaires.getText() == null){
                 messageErreur("Champs commentaires null");
@@ -408,9 +411,6 @@ public class TP3 extends WindowAdapter implements ActionListener {
             } 
             Video videoTrouver = rechercherVideos(textTitre.getText(), Integer.parseInt(textAnnee.getText()), eval, type, textCategories.getText());
             
-            //Video videoTrouver = this.rechercherVideos(textTitre.getText(), Integer.parseInt(textAnnee.getText()), eval, type, textCategories.getText()); //String titre, int annee, int eval, boolean type, String categories
-            //afficherFilmChoisis(videoTrouver.getTitre());
-            
         } else if(e.getSource() == optionCategories[0]) { //Boutton ajouter categorie
             //Get     
             
@@ -448,28 +448,26 @@ public class TP3 extends WindowAdapter implements ActionListener {
                                 messageErreur("Entree null ou vide!");
                             }
                         } else {
-                            messageErreur("Categorie existe deja.");
+                            if(!categorieExiste(listeDeCategories, (String) selectionCategorie.getSelectedItem())) {
+                                textCategories.setText(textCategories.getText() + "\n" + (String) selectionCategorie.getSelectedItem());
+                            } else {
+                                messageErreur("Categorie existe deja.");
+                            }
                         }
                         break;
                     case 1:
                         break;
-                }                
-            
- 
+                } 
         } else if(e.getSource() == optionCategories[1]) { //Boutton supprimer categorie
             //Get
             String [] categoriesDuFilm = textCategories.getText().trim().split("\\n");
             ArrayList listeDeCategories = ArrayToArrayList(categoriesDuFilm);
-            if(listeDeCategories != null || !listeDeCategories.isEmpty()) {
-                selectionCategorie = ajouterCategoriesDansListeDeroulante(selectionCategorie, listeDeCategories, 1);
-            }
             popUpSelection.add(selectionCategorie);
             fenetre.getContentPane().add(popUpSelection);
             int action = JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             switch(action) {
                 case 0 :
-                    String categorieASupprimer = (String) selectionCategorie.getSelectedItem();
-                    
+                    String categorieASupprimer = (String) selectionCategorie.getSelectedItem();  
                     String output = "";
                     if(!listeDeCategories.isEmpty()) {
                         listeDeCategories.remove(categorieASupprimer);
@@ -493,12 +491,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
     public JComboBox ajouterCategoriesDansListeDeroulante(JComboBox liste, ArrayList categories, int option) {
         //Option 0 c'est parce qu'on est sur sur l'option d'ajouter une categorie
         //L'option 1 c'est parce qu'on est sur l'option de supprimer une categorie
-        liste.removeAllItems();
         if(option == 0) {
             liste.addItem("Autres...");
-        }
-        for(Object c : categories) {
-            liste.addItem( (String) c);
         }
         return liste;
     }
@@ -515,6 +509,13 @@ public class TP3 extends WindowAdapter implements ActionListener {
             return true;
         }
         return false;
+    }
+    
+    public void loadCategorie() {
+        ArrayList<String> collectionCategorie = liste.obtenirCles();
+        for(String categorie : collectionCategorie) {
+            selectionCategorie.addItem(categorie);
+        }
     }
 /****************************************/
 /* Les 5 type de mode: Depart,          */
@@ -686,11 +687,11 @@ public class TP3 extends WindowAdapter implements ActionListener {
        //Place the first element of combobox in the grid
        comboCollection.setSelectedIndex(0);
        String titre = (String) comboCollection.getSelectedItem();
-       //System.out.println(titre);
        afficherFilmChoisis(titre);
        
        optionCategories[0].setEnabled(true); //Boutton ajouter categorie
        optionCategories[1].setEnabled(true);
+       loadCategorie();
        /*Video video = this.obtenirVideo(comboCollection.getSelectedItem().toString());
        String catos = this.obtenirCategoriesEnString(comboCollection.getSelectedItem().toString());
        
@@ -748,6 +749,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        optionCategories[0].setEnabled(enabled);
        optionCategories[1].setEnabled(enabled);
        modeButton[5].setEnabled(enabled);
+       loadCategorie();
    }
 
 /****************************************/
