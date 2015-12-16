@@ -397,11 +397,11 @@ public class TP3 extends WindowAdapter implements ActionListener {
                         type = false;
                     }
                     //Place
-                    if(this.modifierVideo(textTitre.getText(), Integer.parseInt(textAnnee.getText()), eval, type, textCommentaires.getText(), textCategories.getText())){ //String titre, int annee, int eval, boolean type, String comments, String categories
-                        JOptionPane.showMessageDialog(fenetre, "Élément " + comboCollection.getSelectedItem().toString() + " modifié!");
+                    if(this.modifierVideo(comboCollection.getSelectedItem().toString(), textTitre.getText(), Integer.parseInt(textAnnee.getText()), eval, type, textCommentaires.getText(), textCategories.getText())){ //String titre, int annee, int eval, boolean type, String comments, String categories
+                        messageSuccess("La video a ete modifier.");
                     }
                     else{
-                        JOptionPane.showMessageDialog(fenetre, "Élément " + comboCollection.getSelectedItem().toString() + " n'a pas été modifié!");
+                        messageSuccess("La video n'a pas ete modifier.");
                     }
                 }
             }
@@ -1227,9 +1227,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
    
    //Big bunch of SETTERS
    
-   public boolean modifierVideo(String titre, int annee, int eval, boolean type, String comments, String categories){
+   public boolean modifierVideo(String oldTitre, String titre, int annee, int eval, boolean type, String comments, String categories){
        ArrayList<String> arrayCategories = liste.obtenirCles();
-       
        Video video;
        try {
            video = new Video(titre, annee, eval, type);
@@ -1240,7 +1239,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        video.setCommentaires(comments);
        
-       Video oldVideo = obtenirVideo(titre);
+       Video oldVideo = obtenirVideo(oldTitre);
        
        int indexOfVideo;
        
@@ -1248,12 +1247,11 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        for(String categorie : arrayCategories){
            indexOfVideo = liste.obtenirIndex(categorie, oldVideo);
-           
            if(indexOfVideo >= 0){
                confirmation = liste.modifier(categorie, video, indexOfVideo);
            }
        }
-       
+       modeModification();
        return confirmation;
    }
    
@@ -1496,6 +1494,6 @@ public class TP3 extends WindowAdapter implements ActionListener {
     }
     
     private void messageSuccess(String message) {
-        JOptionPane.showMessageDialog(null, message, "SUCCESS", JOptionPane.ERROR_MESSAGE, UIManager.getIcon("OptionPane.errorIcon"));
+        JOptionPane.showMessageDialog(fenetre, message);
     }
 }
