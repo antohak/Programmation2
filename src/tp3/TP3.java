@@ -998,6 +998,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
        try {
            charger();
            System.out.println("Liste chargée");
+           System.out.println(liste.toString());
+           System.out.println(liste.obtenirCles().toString());
        } catch (Exception ex) {
            System.out.println(ex.getMessage());
        }
