@@ -371,9 +371,6 @@ public class TP3 extends WindowAdapter implements ActionListener {
             
         } else if(e.getSource() == modeButton[3]) { //Boutton modifier
             //Verify
-            System.out.println(textTitre.getText());
-            System.out.println(textAnnee.getText());
-            System.out.println(textCommentaires.getText());
             if(textTitre.getText() == null || textTitre.getText().equals("")){
                 messageErreur(MSG_ERREUR_CHAMPS_TITRE);
             } else if(textAnnee.getText() == null || textAnnee.getText().equals("") || !textAnnee.getText().matches("^[0-9]+$")){
@@ -418,7 +415,6 @@ public class TP3 extends WindowAdapter implements ActionListener {
             } else {
                 messageErreur(MSG_ERREUR_FIM_NON_SUPPRIMER);
             }
-            System.out.println(obtenirVideo(comboCollection.getSelectedItem().toString()));
             
         } else if(e.getSource() == modeButton[5]) { //Boutton rechercher
             int eval = comboEval.getSelectedIndex();
@@ -501,11 +497,9 @@ public class TP3 extends WindowAdapter implements ActionListener {
                             String categorieEntree = JOptionPane.showInputDialog(popUpSelection, "Ajouter une categorie");
                             if(categorieEntree != null) {
                                 if(!categorieExiste(listeDeCategories, categorieEntree)) {
-                                    System.out.println(listeDeCategories);
                                     if(listeDeCategories.isEmpty()) {
                                         textCategories.setText(categorieEntree);
                                     } else {
-                                        System.out.println("ici");
                                         textCategories.setText(textCategories.getText() + "\n" + categorieEntree);
                                     }
                                     optionCategories[1].setEnabled(true);
@@ -1020,16 +1014,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        try {
            charger();
-           System.out.println("Liste chargée");
-           System.out.println(liste.toString());
-           System.out.println(liste.obtenirCles().toString());
-           for(String categorie : liste.obtenirCles()){
-               for(Video video : liste.obtenirElements(categorie)){
-                   System.out.println("VIDEO: " + video.toString() + " " + video.getEval() + "-");
-               }
-           }
        } catch (Exception ex) {
-           System.out.println(ex.getMessage());
+           this.messageErreurFatale(ex.getMessage());
        }
    }
    
@@ -1215,12 +1201,6 @@ public class TP3 extends WindowAdapter implements ActionListener {
            
            String[] arrayCategories = categories.split(System.getProperty("line.separator"));
            
-           /*
-           for (int i = 0; i < arrayCategories.length; i++) {
-            arrayCategories[i] = arrayCategories[i].replaceAll("[^\\w]", "");
-           }
-           */
-           
            boolean confirmation = false;
            
            //Ajouter cette video dans toutes les categories
@@ -1235,7 +1215,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
                return false; 
            }
        } catch (Exception ex) {
-           System.out.println(ex.getMessage());
+           this.messageErreur(ex.getMessage());
            return false;
        }
    }
@@ -1254,11 +1234,12 @@ public class TP3 extends WindowAdapter implements ActionListener {
        try {
            video = new Video(titre, annee, eval, type);
        } catch (Exception ex) {
-           System.out.println(ex.getMessage());
+           this.messageErreur(ex.getMessage());
            return false;
        }
        
        video.setCommentaires(comments);
+       
        Video oldVideo = obtenirVideo(titre);
        
        int indexOfVideo;
@@ -1321,16 +1302,10 @@ public class TP3 extends WindowAdapter implements ActionListener {
        correctCollection.addAll(listeCollection);
        
        String[] arrayCategories = categories.split("\\r?\\n");
-        /*
-       for(int i = 0; i < arrayCategories.length; i++) {
-           arrayCategories[i] = arrayCategories[i].replaceAll("[^\\w]", "");
-       }
-       */
        
        if(!titre.equals("") && titre != null){
            for(Video video : listeCollection){
                if(!video.getTitre().contains(titre)){
-                   //correctCollection.add(video);
                    correctCollection.remove(video);
                }
            }
@@ -1343,16 +1318,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
                }
            }
        }
-       /*
-       if(eval != 0){
-           for(Video video : collection){
-               if(video.getEval() != eval){
-                   //correctCollection.add(video);
-                   correctCollection.remove(video);
-               }
-           }
-       }
-       */
+       
        if(type != -1){
            boolean controle;
            if(type == 0){
@@ -1368,14 +1334,11 @@ public class TP3 extends WindowAdapter implements ActionListener {
            }
        }
        
-       //System.out.println("" + categories);
-       
        ArrayList<Video> categoriesCollection = new ArrayList<Video>();
        
        if(!categories.equals("")){
            for(String categorie : arrayCategories){
                for(String cato :  liste.obtenirCles()){
-                   //System.out.println(cato);
                }
                
                ArrayList<Video> fuck = liste.obtenirElements(liste.obtenirCles().get(liste.obtenirCles().indexOf(categorie)));
@@ -1408,9 +1371,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
            String catos = this.obtenirCategoriesEnString(video.getTitre());
            catos = catos.replace("\n", "::");
            String comments = video.getCommentaires();
-           //System.out.println(comments);
            comments = comments.replace("\n", "[*]");
-           //System.out.println(comments);
            
            formatDeSortie += video.getTitre() + "::";
            formatDeSortie += video.getAnnee() + "::";
@@ -1462,9 +1423,9 @@ public class TP3 extends WindowAdapter implements ActionListener {
            }
            bufferedReader.close();
        } catch (FileNotFoundException ex) {
-           System.out.println(ex.getMessage());  
+           this.messageErreurFatale(ex.getMessage());
        } catch (IOException ex) {
-           System.out.println(ex.getMessage());
+           this.messageErreurFatale(ex.getMessage());
        }
        
        for(String stringer : stringVideos){
@@ -1478,7 +1439,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
            }else if(elements[2]/*.toString()*/.equals("SÉRIE TV")){
                type = false;
            }else{
-               System.out.println("Erreur TYPE");
+               this.messageErreur("ERREUR TYPE");
            }
            int eval = Integer.parseInt(elements[3]);
            String commentaires = elements[4];         
