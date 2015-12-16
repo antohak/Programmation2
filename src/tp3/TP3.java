@@ -236,25 +236,25 @@ public class TP3 extends WindowAdapter implements ActionListener {
      */
     public void gererModeChoisis(ActionEvent e) {
        if(e.getSource() == mode[0]) { //Mode consultation
+           mode[1].setSelected(false);
+           mode[2].setSelected(false);
+           mode[3].setSelected(false);
            modeConsultation();
-           mode[1].setSelected(false);
-           mode[2].setSelected(false);
-           mode[3].setSelected(false);
        } else if(e.getSource() == mode[1]) { //Mode ajout
+           mode[0].setSelected(false);
+           mode[2].setSelected(false);
+           mode[3].setSelected(false);
            modeAjout();
-           mode[0].setSelected(false);
-           mode[2].setSelected(false);
-           mode[3].setSelected(false);
        } else if(e.getSource() == mode[2]) { //Mode modification
-           modeModification();
            mode[0].setSelected(false);
            mode[1].setSelected(false);
            mode[3].setSelected(false);
+           modeModification();
        } else if(e.getSource() == mode[3]) { //Mode recherche
-           modeRecherche();
            mode[0].setSelected(false);
            mode[1].setSelected(false);
            mode[2].setSelected(false);
+           modeRecherche();
        }
    }
     public void resetLabels() {
@@ -276,6 +276,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
             infos_film[2].setText(filmOuSerie);
             infos_film[3].setText(eval);
         } else {
+            
             textTitre.setText(film.getTitre());
             textAnnee.setText(String.valueOf(film.getAnnee()));
             comboEval.setSelectedIndex(film.getEval() + 1);
@@ -414,10 +415,14 @@ public class TP3 extends WindowAdapter implements ActionListener {
             }
             System.out.println(obtenirVideo(comboCollection.getSelectedItem().toString()));
             
-             //String titre
-            
         } else if(e.getSource() == modeButton[5]) { //Boutton rechercher
-            
+            if(comboCollection.getItemCount() == 0) {
+                loadCollection();
+                modeButton[0].setVisible(true);
+                modeButton[0].setEnabled(true);
+                modeButton[1].setVisible(true);
+                modeButton[1].setEnabled(true);
+            }
             int eval = comboEval.getSelectedIndex() - 1;
             /*
             -1:  Pas de recherche par evaluation
@@ -444,7 +449,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
                 videosTrouver = rechercherVideos(textTitre.getText(), -1, eval, type, textCategories.getText());
             }
 
-            comboCollection.removeAllItems();
+            //comboCollection.removeAllItems();
             ArrayList itemsInComboCollection = new ArrayList();
             for(Video video : videosTrouver){
                 if(!itemsInComboCollection.contains(video)){
@@ -1279,18 +1284,18 @@ public class TP3 extends WindowAdapter implements ActionListener {
    //Considère les champs vides comme des */ALL
    //Donne un array de videos qui respecte la query
    public ArrayList<Video> rechercherVideos(String titre, int annee, int eval, int type, String categories){
-       ArrayList<Video> collection = new ArrayList<Video>();
-       ArrayList<Video> correctCollection = new ArrayList<Video>();
+       ArrayList<Video> listeCollection = new ArrayList<>();
+       ArrayList<Video> correctCollection = new ArrayList<>();
        
        for(String categorie : liste.obtenirCles()){
            for(Video video : liste.obtenirElements(categorie)){
-               if(!collection.contains(video)){
-                   collection.add(video);
+               if(!listeCollection.contains(video)){
+                   listeCollection.add(video);
                }
            }
        }
        
-       correctCollection.addAll(collection);
+       correctCollection.addAll(listeCollection);
        
        String[] arrayCategories = categories.split("\\r?\\n");
         /*
@@ -1300,7 +1305,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        */
        
        if(!titre.equals("") && titre != null){
-           for(Video video : collection){
+           for(Video video : listeCollection){
                if(!video.getTitre().contains(titre)){
                    //correctCollection.add(video);
                    correctCollection.remove(video);
@@ -1308,7 +1313,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
            }
        }
        if(annee != -1){
-           for(Video video : collection){
+           for(Video video : listeCollection){
                if(video.getAnnee() != annee){
                    //correctCollection.add(video);
                    correctCollection.remove(video);
@@ -1332,7 +1337,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
            }else{
                controle = true;
            }
-           for(Video video : collection){
+           for(Video video : listeCollection){
                if(video.isFilm() != controle){
                    //correctCollection.add(video);
                    correctCollection.remove(video);
@@ -1347,7 +1352,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        if(!categories.equals("")){
            for(String categorie : arrayCategories){
                for(String cato :  liste.obtenirCles()){
-                   System.out.println(cato);
+                   //System.out.println(cato);
                }
                
                ArrayList<Video> fuck = liste.obtenirElements(liste.obtenirCles().get(liste.obtenirCles().indexOf(categorie)));
@@ -1360,14 +1365,11 @@ public class TP3 extends WindowAdapter implements ActionListener {
                }
            }
        }
-       
-       for(Video video : collection){
+       for(Video video : listeCollection){
            if(!categoriesCollection.contains(video)){
                correctCollection.remove(video);
            }
        }
-       
-       
        return correctCollection;
    }
    
