@@ -24,7 +24,7 @@ public class Video implements Serializable {
            "Erreur. L'annÃ©e doit Ãªtre un entier entre " + ANNEE_MIN  + " et " 
            + ANNEE_MAX + " !";
    
-   public static final String ERR_EVAL_INVALIDE = "Erreur. Ã‰valuation invalide !";
+   public static final String ERR_EVAL_INVALIDE = "Erreur. Évaluation invalide !";
    
    //attributs
    private String titre = "";        //titre du film

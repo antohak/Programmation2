@@ -274,9 +274,9 @@ public class TP3 extends WindowAdapter implements ActionListener {
         if(e.getSource() == modeButton[0]) { //Boutton precedent
             //Verify
             if(comboCollection.getItemAt(comboCollection.getSelectedIndex() - 1) == null){
-                modeButton[0].setVisible(false);
+                //modeButton[0].setVisible(false);
                 modeButton[0].setEnabled(false);
-                messageErreur("Il n'y a pas d'element precedent a la collection");
+                //messageErreur("Il n'y a pas d'element precedent a la collection");
                 
             } else {
                 comboCollection.setSelectedIndex(comboCollection.getSelectedIndex() - 1);
@@ -295,14 +295,17 @@ public class TP3 extends WindowAdapter implements ActionListener {
                 //textCategories.setText(catos);
                 modeButton[1].setVisible(true);
                 modeButton[1].setEnabled(true);
+                if(comboCollection.getItemAt(comboCollection.getSelectedIndex() - 1) == null){
+                    modeButton[0].setEnabled(false);
+                }
             }
             
         } else if(e.getSource() == modeButton[1]) { //Boutton suivant
             //Verify
             if(comboCollection.getItemAt(comboCollection.getSelectedIndex() + 1) == null){
-                modeButton[1].setVisible(false);
+                //modeButton[1].setVisible(false);
                 modeButton[1].setEnabled(false);
-                messageErreur("Il n'y a pas d'element suivant a la collection");
+                //messageErreur("Il n'y a pas d'element suivant a la collection");
             } else{
                 comboCollection.setSelectedIndex(comboCollection.getSelectedIndex() + 1);
                 //Get
@@ -320,6 +323,9 @@ public class TP3 extends WindowAdapter implements ActionListener {
                 //textCategories.setText(catos);
                 modeButton[0].setVisible(true);
                 modeButton[0].setEnabled(true);
+                if(comboCollection.getItemAt(comboCollection.getSelectedIndex() + 1) == null){
+                    modeButton[1].setEnabled(false);
+                }
             }
         } else if(e.getSource() == modeButton[2]) { //Boutton ajouter
             //Verify
@@ -385,7 +391,12 @@ public class TP3 extends WindowAdapter implements ActionListener {
                         type = false;
                     }
                     //Place
-                    this.modifierVideo(textTitre.getText(), Integer.parseInt(textAnnee.getText()), eval, type, textCommentaires.getText(), textCategories.getText()); //String titre, int annee, int eval, boolean type, String comments, String categories
+                    if(this.modifierVideo(textTitre.getText(), Integer.parseInt(textAnnee.getText()), eval, type, textCommentaires.getText(), textCategories.getText())){ //String titre, int annee, int eval, boolean type, String comments, String categories
+                        JOptionPane.showMessageDialog(fenetre, "Élément " + comboCollection.getSelectedItem().toString() + " modifié!");
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(fenetre, "Élément " + comboCollection.getSelectedItem().toString() + " n'a pas été modifié!");
+                    }
                 }
             }
             
@@ -421,7 +432,24 @@ public class TP3 extends WindowAdapter implements ActionListener {
              1: SERIE TV
             */
             int type = comboType.getSelectedIndex() - 1;
-            ArrayList videosTrouver = rechercherVideos(textTitre.getText(), Integer.parseInt(textAnnee.getText()), eval, type, textCategories.getText());
+            
+            ArrayList<Video> videosTrouver = new ArrayList<Video>();
+
+            if(!textAnnee.getText().equals("")){
+                videosTrouver = rechercherVideos(textTitre.getText(), Integer.parseInt(textAnnee.getText()), eval, type, textCategories.getText());
+            }else{
+                videosTrouver = rechercherVideos(textTitre.getText(), -1, eval, type, textCategories.getText());
+            }
+
+            comboCollection.removeAllItems();
+            ArrayList itemsInComboCollection = new ArrayList();
+            for(Video video : videosTrouver){
+                if(!itemsInComboCollection.contains(video)){
+                    itemsInComboCollection.add(video);
+                    comboCollection.addItem(video.getTitre());
+                }
+            }
+            comboCollection.setEnabled(true);
             
         } else if(e.getSource() == optionCategories[0]) { //Boutton ajouter categorie
             //Get     
@@ -429,6 +457,14 @@ public class TP3 extends WindowAdapter implements ActionListener {
                 ArrayList listeDeCategories = ArrayToArrayList(categoriesDuFilm);
                 if(listeDeCategories.get(0).equals("")) {
                     listeDeCategories.clear();
+                }
+                selectionCategorie.removeAllItems();
+                ArrayList cater = new ArrayList();
+                for(String categorie : liste.obtenirCles()){
+                    if(!cater.contains(categorie)){
+                        cater.add(categorie);
+                        selectionCategorie.addItem(categorie);
+                    }
                 }
                 popUpSelection.add(selectionCategorie);
                 fenetre.getContentPane().add(popUpSelection);
@@ -474,6 +510,10 @@ public class TP3 extends WindowAdapter implements ActionListener {
             //Get
             String [] categoriesDuFilm = textCategories.getText().trim().split("\\n");
             ArrayList listeDeCategories = ArrayToArrayList(categoriesDuFilm);
+            selectionCategorie.removeAllItems();
+            for(Object categorie : listeDeCategories){
+                selectionCategorie.addItem(categorie.toString());
+            }
             popUpSelection.add(selectionCategorie);
             fenetre.getContentPane().add(popUpSelection);
             int action = JOptionPane.showConfirmDialog(null, popUpSelection, "Categorie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -574,15 +614,23 @@ public class TP3 extends WindowAdapter implements ActionListener {
            infos_film[k].setVisible(true);
        }
        
+       //Place the first element of combobox in the grid DEPRECATED by Enoncé
+       comboCollection.setSelectedIndex(comboCollection.getSelectedIndex());
+       
        for(int l = 0; l < modeButton.length; l++) {
            if(l < 2) {
-               modeButton[0].setEnabled(true);
-               modeButton[0].setVisible(true);
-               modeButton[l].setEnabled(true);
-               modeButton[l].setVisible(true);
-           } else {
                modeButton[0].setEnabled(false);
-               modeButton[0].setVisible(false);
+               modeButton[0].setVisible(true);
+               if(comboCollection.getItemCount() > 1){
+                   modeButton[l].setEnabled(true);
+                   modeButton[l].setVisible(true);
+               }else{
+                   modeButton[l].setEnabled(false);
+                   modeButton[l].setVisible(true);
+               }
+               //modeButton[l].setEnabled(true);
+               //modeButton[l].setVisible(true);
+           } else {
                modeButton[l].setEnabled(false);
                modeButton[l].setVisible(false);
            }
@@ -592,10 +640,6 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        //Get the collection and place in combobox
        //this.obtenirCollection();
-       
-
-       //Place the first element of combobox in the grid
-       comboCollection.setSelectedIndex(0);
        
        Video video = this.obtenirVideo(comboCollection.getSelectedItem().toString());
        String catos = this.obtenirCategoriesEnString(comboCollection.getSelectedItem().toString());
@@ -614,6 +658,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        textTitre.setEnabled(true);
        textTitre.setEditable(true);
        textTitre.setText("");
+       textTitre.requestFocusInWindow();
        
        textAnnee.setVisible(true);
        textAnnee.setEnabled(true);
@@ -622,7 +667,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        comboType.setVisible(true);
        comboType.setEnabled(true);
-       comboType.setSelectedIndex(0);
+       comboType.setSelectedIndex(1);
        
        comboEval.setVisible(true);
        comboEval.setEnabled(true);
@@ -688,10 +733,12 @@ public class TP3 extends WindowAdapter implements ActionListener {
        textCommentaires.setEnabled(true);
        textCommentaires.setEditable(true);
        textCommentaires.setBackground(Color.WHITE);
+       textCommentaires.setText("");
        
-       textCategories.setEnabled(false);
+       textCategories.setEnabled(true);
        textCategories.setEditable(false);
        textCategories.setBackground(GRIS);
+       textCategories.setText("");
        
        for(int i = 0; i < infos_film.length; i++) {
            infos_film[i].setVisible(false);
@@ -737,6 +784,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        textTitre.setEnabled(true);
        textTitre.setEditable(true);
        textTitre.setText("");
+       textTitre.requestFocusInWindow();
        
        textAnnee.setVisible(true);
        textAnnee.setEnabled(true);
@@ -745,17 +793,21 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        comboType.setVisible(true);
        comboType.setEnabled(true);
+       comboType.setSelectedIndex(0);
        
        comboEval.setVisible(true);
        comboEval.setEnabled(false);
+       comboEval.setSelectedIndex(0);
        
-       textCommentaires.setEnabled(false);
+       textCommentaires.setEnabled(true);
        textCommentaires.setEditable(false);
        textCommentaires.setBackground(GRIS);
+       textCommentaires.setText("");
        
-       textCategories.setEnabled(false);
+       textCategories.setEnabled(true);
        textCategories.setEditable(false);
        textCategories.setBackground(GRIS);
+       textCategories.setText("");
        
        for(int i = 0; i < infos_film.length; i++) {
            infos_film[i].setVisible(false);
@@ -860,7 +912,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        infos_film[1].setBounds(x_Pos, labels[3].getY() - 5, 360, 25);
        
        //comboType = new JComboBox();
-       comboType.addItem("Pas de type");
+       comboType.addItem("");
        comboType.addItem("FILM");
        comboType.addItem("SERIE TV");
        comboType.setBounds(x_Pos, labels[4].getY(), 360, 20);
@@ -868,9 +920,9 @@ public class TP3 extends WindowAdapter implements ActionListener {
        infos_film[2].setBounds(x_Pos, labels[4].getY(), 360, 20);
        
        //comboEval = new JComboBox();
-       comboEval.addItem("Pas d'evaluation");
-       comboEval.addItem("0 etoiles");
-       comboEval.addItem("1 etoiles");
+       comboEval.addItem("");
+       comboEval.addItem("0 etoile");
+       comboEval.addItem("1 etoile");
        comboEval.addItem("2 etoiles");
        comboEval.addItem("3 etoiles");
        comboEval.addItem("4 etoiles");
@@ -952,7 +1004,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        try {
            charger();
-           System.out.println("Liste charger");
+           System.out.println("Liste chargée");
        } catch (Exception ex) {
            System.out.println(ex.getMessage());
        }
@@ -998,22 +1050,20 @@ public class TP3 extends WindowAdapter implements ActionListener {
    //Big bunch of getters
    
    //Obtenir toutes les videos
-   public ArrayList obtenirCollection(){
+   public ArrayList<Video> obtenirCollection(){
        //Obtenir toutes les videos en naviguant dans les categories
        ArrayList<Video> videos = new ArrayList<>();
        ArrayList<String> categories = liste.obtenirCles();
        
        for(String categorie : categories){
-           System.out.println("ICIIIIIIIIIII " + categorie);
            ArrayList<Video> videosOfCategorie = liste.obtenirElements(categorie);
            for(Video vid : videosOfCategorie){
                if(!videos.contains(vid)){
                    videos.add(vid);
-                   System.out.println(vid.getTitre());
                }
            } 
        }
-
+       
        //Return
        return videos;
    }
@@ -1023,19 +1073,17 @@ public class TP3 extends WindowAdapter implements ActionListener {
        //Obtenir la video en naviguant dans les categories
        Video video = null;
        ArrayList categories = liste.obtenirCles();
-       
+
        for(Object categorie : categories){
-           ArrayList videosOfCategorie = liste.obtenirElements((String)categorie);
+           ArrayList<Video> videosOfCategorie = liste.obtenirElements((String)categorie);
            
-           for(Object vid : videosOfCategorie){
-               if(vid instanceof Video){
-                   Video temp = (Video)vid;
-                   if(temp.getTitre().equals(titre)){
-                       video = temp;
-                   }
-               }
+           for(Video vid : videosOfCategorie){
+                Video temp = (Video)vid;
+                if(temp.getTitre().equals(titre)){
+                    video = temp;
+                }
            }
-        }
+       }
        
        //Return
        return video;
@@ -1087,13 +1135,14 @@ public class TP3 extends WindowAdapter implements ActionListener {
        //Obtenir tous les <STRING,*> qui contiennent la video
        String categories = "";
        Video video = obtenirVideo(titre);
-       ArrayList arrayCategories = liste.obtenirCles();
+       ArrayList<String> arrayCategories = liste.obtenirCles();
        
-       for(Object categorie : arrayCategories){
-           if(liste.obtenirElements((String)categorie).contains(video)){
+       for(String categorie : arrayCategories){
+           if(liste.obtenirElements(categorie).contains(video)){
                categories += categorie + "\n";
            }
        }
+       
        //Remove last "\n"?
        if(!categories.equals("")){
            categories = categories.substring(0, categories.length() - 1);
@@ -1108,13 +1157,14 @@ public class TP3 extends WindowAdapter implements ActionListener {
        //Obtenir tous les <STRING,*> qui contiennent la video
        ArrayList categories = new ArrayList();
        Video video = obtenirVideo(titre);
-       ArrayList arrayCategories = liste.obtenirCles();
+       ArrayList<String> arrayCategories = liste.obtenirCles();
        
-       for(Object categorie : arrayCategories){
-           if(liste.obtenirElements((String)categorie).contains(video)){
+       for(String categorie : arrayCategories){
+           if(liste.obtenirElements(categorie).contains(video)){
                categories.add(categorie);
            }
        }
+       
        //Return
        return categories;
    }
@@ -1124,10 +1174,10 @@ public class TP3 extends WindowAdapter implements ActionListener {
        //Obtenir tous les <STRING,*> qui contiennent la video
        int categories = 0;
        Video video = obtenirVideo(titre);
-       ArrayList arrayCategories = liste.obtenirCles();
+       ArrayList<String> arrayCategories = liste.obtenirCles();
        
-       for(Object categorie : arrayCategories){
-           if(liste.obtenirElements((String)categorie).contains(video)){
+       for(String categorie : arrayCategories){
+           if(liste.obtenirElements(categorie).contains(video)){
                categories++;
            }
        }
@@ -1140,18 +1190,30 @@ public class TP3 extends WindowAdapter implements ActionListener {
            //Creer un objet video avec TITRE ANNEE TYPE EVAL COMMENTS
            Video video = new Video(titre, annee, eval, type);
            video.setCommentaires(comments);
-           //Convert categories to array and place in arrayCategories
-           String[] arrayCategories = categories.split("\\s+");
            
+           String[] arrayCategories = categories.split(System.getProperty("line.separator"));
+           
+           /*
            for (int i = 0; i < arrayCategories.length; i++) {
             arrayCategories[i] = arrayCategories[i].replaceAll("[^\\w]", "");
            }
+           */
+           
+           boolean confirmation = false;
+           
            //Ajouter cette video dans toutes les categories
-           for(Object categorie : arrayCategories){
-               liste.ajouter((String)categorie, video);
+           for(String categorie : arrayCategories){
+               confirmation = liste.ajouter(categorie, video);
            }
-           JOptionPane.showMessageDialog(fenetre, video.getTitre() + " ajouter a la liste!");
-           return true;  
+           
+           if(confirmation){
+               JOptionPane.showMessageDialog(fenetre, video.getTitre() + " ajouté à la liste!");
+               return true; 
+           }else{
+               JOptionPane.showMessageDialog(fenetre, video.getTitre() + " n'a pas été ajouté à la liste!");
+               return false; 
+           }
+            
        } catch (Exception ex) {
            System.out.println(ex.getMessage());
            return false;
@@ -1159,16 +1221,15 @@ public class TP3 extends WindowAdapter implements ActionListener {
    }
    
    public boolean ajouterCategorie(String categorie){
+       
        return liste.ajouter(categorie, new ArrayList());
    }
    
    //Big bunch of SETTERS
    
    public boolean modifierVideo(String titre, int annee, int eval, boolean type, String comments, String categories){
-       String[] arrayCategories = categories.split("\\s+");
-       for (int i = 0; i < arrayCategories.length; i++) {
-         arrayCategories[i] = arrayCategories[i].replaceAll("[^\\w]", "");
-       }
+       ArrayList<String> arrayCategories = liste.obtenirCles();
+       
        Video video;
        try {
            video = new Video(titre, annee, eval, type);
@@ -1176,6 +1237,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
            System.out.println(ex.getMessage());
            return false;
        }
+       
        video.setCommentaires(comments);
        Video oldVideo = obtenirVideo(titre);
        
@@ -1183,12 +1245,14 @@ public class TP3 extends WindowAdapter implements ActionListener {
        
        boolean confirmation = false;
        
-       for(Object categorie : arrayCategories){
-           indexOfVideo = liste.obtenirIndex((String)categorie, oldVideo);
+       for(String categorie : arrayCategories){
+           indexOfVideo = liste.obtenirIndex(categorie, oldVideo);
+           
            if(indexOfVideo >= 0){
-               confirmation = liste.modifier((String)categorie, video, indexOfVideo);
+               confirmation = liste.modifier(categorie, video, indexOfVideo);
            }
        }
+       
        return confirmation;
    }
    
@@ -1198,17 +1262,23 @@ public class TP3 extends WindowAdapter implements ActionListener {
        Video video = obtenirVideo(titre);
        boolean confirmation = false;
        
-       for(Object categorie : liste.obtenirCles()){
+       for(String categorie : liste.obtenirCles()){
            if(!confirmation){
-               confirmation = liste.supprimer((String)categorie, video);
+               liste.supprimer(categorie, video);
            }
        }
+       
        return confirmation;
    }
    
    public boolean supprimerCategorie(String categorie){
        ArrayList list = liste.supprimer(categorie);
-       return list.isEmpty();
+       
+       if(list == null){
+           return true;
+       }else{
+           return false;
+       }
    }
            
    //Big bunch of QUERIES
@@ -1216,48 +1286,53 @@ public class TP3 extends WindowAdapter implements ActionListener {
    //Recherche avec les informations dans TITRE, ANNEE, TYPE, EVALUATION, COMMENTAIRES, CATEGORIES en &&
    //Considère les champs vides comme des */ALL
    //Donne un array de videos qui respecte la query
-   public ArrayList rechercherVideos(String titre, int annee, int eval, int type, String categories){
-       ArrayList collection = new ArrayList();
-       for(Object categorie : liste.obtenirCles()){
-           for(Object video : liste.obtenirElements((String)categorie)){
+   public ArrayList<Video> rechercherVideos(String titre, int annee, int eval, int type, String categories){
+       ArrayList<Video> collection = new ArrayList<Video>();
+       ArrayList<Video> correctCollection = new ArrayList<Video>();
+       
+       for(String categorie : liste.obtenirCles()){
+           for(Video video : liste.obtenirElements(categorie)){
                if(!collection.contains(video)){
                    collection.add(video);
                }
            }
        }
        
-       //Convert categories to array and place in arrayCategories
-       String[] arrayCategories = categories.split("\\s+");
-       //Little StackOverflow fix
+       correctCollection.addAll(collection);
+       
+       String[] arrayCategories = categories.split("\\r?\\n");
+        /*
        for(int i = 0; i < arrayCategories.length; i++) {
            arrayCategories[i] = arrayCategories[i].replaceAll("[^\\w]", "");
        }
+       */
        
-       //TODO: Titre: Ajouter les segments de titre DONE, TO VERIFY
        if(!titre.equals("") && titre != null){
-           for(Object video : collection){
-               Video temp = (Video) video;
-               if(!temp.getTitre().contains(titre)){
-                   collection.remove(video);
+           for(Video video : collection){
+               if(!video.getTitre().contains(titre)){
+                   //correctCollection.add(video);
+                   correctCollection.remove(video);
                }
            }
        }
        if(annee != -1){
-           for(Object video : collection){
-               Video temp = (Video) video;
-               if(temp.getAnnee() != annee){
-                   collection.remove(video);
+           for(Video video : collection){
+               if(video.getAnnee() != annee){
+                   //correctCollection.add(video);
+                   correctCollection.remove(video);
                }
            }
        }
+       /*
        if(eval != -1){
-           for(Object video : collection){
-               Video temp = (Video) video;
-               if(temp.getEval() != eval){
-                   collection.remove(video);
+           for(Video video : collection){
+               if(video.getEval() != eval){
+                   //correctCollection.add(video);
+                   correctCollection.remove(video);
                }
            }
        }
+       */
        if(type != -1){
            boolean controle;
            if(type == 0){
@@ -1265,25 +1340,43 @@ public class TP3 extends WindowAdapter implements ActionListener {
            }else{
                controle = true;
            }
-           for(Object video : collection){
-               Video temp = (Video) video;
-               if(temp.isFilm() != controle){
-                   collection.remove(video);
+           for(Video video : collection){
+               if(video.isFilm() != controle){
+                   //correctCollection.add(video);
+                   correctCollection.remove(video);
                }
            }
        }
        
-       for(Object video : collection){
-            for(Object categorie : arrayCategories){
-                ArrayList categorieToCheck = liste.obtenirElements((String)categorie);
-                if(!categorieToCheck.contains(video)){
-                    collection.remove(video);
-                }
-            }
+       //System.out.println("" + categories);
+       
+       ArrayList<Video> categoriesCollection = new ArrayList<Video>();
+       
+       if(!categories.equals("")){
+           for(String categorie : arrayCategories){
+               for(String cato :  liste.obtenirCles()){
+                   System.out.println(cato);
+               }
+               
+               ArrayList<Video> fuck = liste.obtenirElements(liste.obtenirCles().get(liste.obtenirCles().indexOf(categorie)));
+               //for(Video video : liste.obtenirElements(liste.obtenirCles().get(liste.obtenirCles().indexOf(categorie)))){
+               //for(Video video : liste.obtenirElements(categorie)){
+               for(Video video : fuck){
+                   if(!categoriesCollection.contains(video)){
+                       categoriesCollection.add(video);
+                   }
+               }
+           }
        }
        
-       return collection;
+       for(Video video : collection){
+           if(!categoriesCollection.contains(video)){
+               correctCollection.remove(video);
+           }
+       }
        
+       
+       return correctCollection;
    }
    
    //TEXT SAVE & LOAD
@@ -1293,35 +1386,29 @@ public class TP3 extends WindowAdapter implements ActionListener {
        File fichier = new File(PATH);
        String formatDeSortie = "";
        
-       //this.obtenirCollection();
-       //this.obtenirCategoriesEnArrayList();
-       
-       //TODO
-       
-       for(Object video : this.obtenirCollection()){
-           Video vid = (Video)video;
-           String catos = this.obtenirCategoriesEnString(vid.getTitre());
+       for(Video video : this.obtenirCollection()){
+           String catos = this.obtenirCategoriesEnString(video.getTitre());
            catos = catos.replace("\n", "::");
-           String comments = vid.getCommentaires();
+           String comments = video.getCommentaires();
            //System.out.println(comments);
            comments = comments.replace("\n", "[*]");
            //System.out.println(comments);
            
-           formatDeSortie += vid.getTitre() + "::";
-           formatDeSortie += vid.getAnnee() + "::";
-           if(vid.isFilm()){
+           formatDeSortie += video.getTitre() + "::";
+           formatDeSortie += video.getAnnee() + "::";
+           if(video.isFilm()){
                formatDeSortie += "FILM" + "::";
            } else{
                formatDeSortie += "SÉRIE TV" + "::";
            }
-           formatDeSortie += vid.getEval() + "::"; //vid.getEval();
+           formatDeSortie += video.getEval() + "::";
            
            formatDeSortie += comments; //Comments
            
            formatDeSortie += "::";
            
            formatDeSortie += catos; //Catos
-           formatDeSortie += "\r\n"; //Petit fixe pour que les new lines append au fichier txt
+           formatDeSortie += "\r\n"; //Petit fix pour que les new lines append au fichier txt
        }
        
        formatDeSortie = formatDeSortie.substring(0, formatDeSortie.length() - 1);
@@ -1338,9 +1425,7 @@ public class TP3 extends WindowAdapter implements ActionListener {
    public void charger() throws Exception{
        String PATH = "./videos.txt";
        
-       ArrayList stringVideos = new ArrayList();
-       ArrayList videos = new ArrayList();
-       ArrayList categories = new ArrayList();
+       ArrayList<String> stringVideos = new ArrayList();
        
        //Regex
        String pattern = "\\[(.*?)\\]";
@@ -1364,9 +1449,8 @@ public class TP3 extends WindowAdapter implements ActionListener {
            System.out.println(ex.getMessage());
        }
        
-       for(Object stringer : stringVideos){
-           String temp = (String)stringer;
-           String[] elements = temp.split("::");
+       for(String stringer : stringVideos){
+           String[] elements = stringer.split("::");
            String titre = elements[0];
            int annee = Integer.parseInt(elements[1]);   
            boolean type = false;
@@ -1394,12 +1478,15 @@ public class TP3 extends WindowAdapter implements ActionListener {
         if(arrayList == null){
             throw new NullPointerException("L'ArrayList " + arrayList + " est null");
         }
+        
         ArrayList newArrayList = new ArrayList();
+        
         for(Object objet : arrayList){
             if(!newArrayList.contains(objet)){
                 newArrayList.add(objet);
             }
         }
+        
         return newArrayList;
     }
     
@@ -1407,12 +1494,15 @@ public class TP3 extends WindowAdapter implements ActionListener {
         if(arrayList == null){
             throw new NullPointerException("L'ArrayList " + arrayList + " est null");
         }
+        
         ArrayList newArrayList = new ArrayList();
+        
         for(Object objet : arrayList){
             if(objet != null){
                 newArrayList.add(objet);
             }
         }
+        
         return newArrayList;
     }
    
